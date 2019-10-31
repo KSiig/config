@@ -1,0 +1,55 @@
+---
+- include_tasks: os_specific/{{ ansible_distribution }}.yml
+
+- name: Update cache
+  command: apt update
+  become: true
+  changed_when: false
+
+- name: Install Neovim
+  apt:
+    name: neovim
+  become: true
+
+- name: Create Neovim config folder
+  file:
+    path: ~/.config/nvim
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    mode: '0744'
+    state: directory
+
+- name: Place configuration file
+  copy:
+    src: files/init.vim
+    dest: ~/.config/nvim/init.vim
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    mode: '0644'
+
+- name: Create Neovim config folder
+  file:
+    path: ~/.local/share/nvim/site/autoload
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    mode: '0744'
+    state: directory
+
+- name: Download vim-plug
+  get_url:
+    url: https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+    dest: ~/.local/share/nvim/site/autoload/plug.vim
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    mode: '0644'
+
+# Vim-plug needs git to download plugins
+- name: Install git
+  package:
+    name: git
+    state: present
+  become: true
+
+- name: Install plugins
+  command: nvim -c PlugInstall -c q -c q
+  changed_when: false

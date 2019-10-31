@@ -1,0 +1,5 @@
+---
+- name: Install Neovim PPA
+  apt_repository:
+    repo: "{{ neovim_ppa }}"
+  become: true

@@ -14,8 +14,8 @@
 - name: Create Neovim config folder
   file:
     path: ~/.config/nvim
-    owner: "{{ ansible_user }}"
-    group: "{{ ansible_user }}"
+    owner: "{{ ansible_user_id }}"
+    group: "{{ ansible_user_id }}"
     mode: '0744'
     state: directory
 
@@ -23,15 +23,15 @@
   copy:
     src: files/init.vim
     dest: ~/.config/nvim/init.vim
-    owner: "{{ ansible_user }}"
-    group: "{{ ansible_user }}"
+    owner: "{{ ansible_user_id }}"
+    group: "{{ ansible_user_id }}"
     mode: '0644'
 
 - name: Create Neovim config folder
   file:
     path: ~/.local/share/nvim/site/autoload
-    owner: "{{ ansible_user }}"
-    group: "{{ ansible_user }}"
+    owner: "{{ ansible_user_id }}"
+    group: "{{ ansible_user_id }}"
     mode: '0744'
     state: directory
 
@@ -39,16 +39,18 @@
   get_url:
     url: https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
     dest: ~/.local/share/nvim/site/autoload/plug.vim
-    owner: "{{ ansible_user }}"
-    group: "{{ ansible_user }}"
+    owner: "{{ ansible_user_id }}"
+    group: "{{ ansible_user_id }}"
     mode: '0644'
 
-# Vim-plug needs git to download plugins
-- name: Install git
+- name: Install dependencies
   package:
-    name: git
+    name: "{{ item }}"
     state: present
   become: true
+  with_items:
+    - git
+    - gnupg2
 
 - name: Install plugins
   command: nvim -c PlugInstall -c q -c q

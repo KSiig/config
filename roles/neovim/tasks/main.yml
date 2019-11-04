@@ -1,11 +1,6 @@
 ---
 - include_tasks: os_specific/{{ ansible_distribution }}.yml
 
-- name: Update cache
-  command: apt update
-  become: true
-  changed_when: false
-
 - name: Install Neovim
   apt:
     name: neovim

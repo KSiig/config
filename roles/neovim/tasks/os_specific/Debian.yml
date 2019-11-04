@@ -3,4 +3,5 @@
   apt_repository:
     repo: "{{ neovim_ppa }}"
     update_cache: true
+    codename: buster
   become: true

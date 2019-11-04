@@ -1,0 +1,22 @@
+---
+- name: Install Tmux
+  package:
+    name: tmux
+    state: present
+  become: true
+
+- name: Copy config files to host
+  copy:
+    src: "{{ tmux_conf }}"
+    dest: ~/.tmux.conf
+    owner: "{{ ansible_user_id }}"
+    group: "{{ ansible_user_id }}"
+    mode: '0644'
+
+- name: Copy config files to host
+  copy:
+    src: "{{ tmux_conf_local }}"
+    dest: ~/.tmux.conf.local
+    owner: "{{ ansible_user_id }}"
+    group: "{{ ansible_user_id }}"
+    mode: '0644'

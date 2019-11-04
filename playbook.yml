@@ -1,4 +1,12 @@
 ---
-- hosts: local
+- hosts: personal
   roles:
     - neovim
+    - tmux
+  vars:
+    tmux_conf_local: files/.tmux.conf.local.personal
+
+- hosts: servers
+  roles:
+    - neovim
+    - tmux

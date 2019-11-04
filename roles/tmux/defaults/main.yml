@@ -1,0 +1,3 @@
+---
+tmux_conf: files/.tmux.conf
+tmux_conf_local: files/.tmux.conf.local

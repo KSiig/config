@@ -59,7 +59,7 @@ if has("gui_running")
   set guicursor=n-v-c-sm:block,i-ci-ve:block,r-cr-o:blocks
 endif
 
-colorscheme dracula
+silent! colorscheme dracula
 
 " Basic Vim Configuration
 let mapleader = " "

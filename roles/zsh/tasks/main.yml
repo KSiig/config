@@ -1,0 +1,42 @@
+---
+- name: Install dependencies
+  package:
+    name:
+      - zsh
+      - git
+    state: present
+  become: true
+
+- name: Change shell to zsh
+  user:
+    name: "{{ ansible_user_id }}"
+    shell: /bin/zsh
+  become: true
+
+- name: Clone oh-my-zsh to host
+  git:
+    repo: https://github.com/robbyrussell/oh-my-zsh
+    version: master
+    dest: "/home/{{ ansible_user_id }}/.oh-my-zsh"
+    depth: 1
+
+- name: Clone oh-my-zsh plugins to host
+  git:
+    repo: "https://github.com/{{ item.owner }}/{{ item.repo }}"
+    version: master
+    dest: "/home/{{ ansible_user_id }}/.oh-my-zsh/plugins/{{ item.repo }}"
+  with_items:
+    - owner: djui
+      repo: alias-tips
+    - owner: zsh-users
+      repo: zsh-syntax-highlighting
+
+- name: Copy config files to host
+  copy:
+    src: "{{ item }}"
+    dest: "/home/{{ ansible_user_id }}/"
+    owner: "{{ ansible_user_id }}"
+    group: "{{ ansible_user_id }}"
+    mode: '0644'
+  with_fileglob:
+    - files/.*

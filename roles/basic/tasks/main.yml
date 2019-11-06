@@ -1,0 +1,11 @@
+---
+- name: Install basic packages
+  package:
+    name:
+      - git
+      - tmux
+      - curl
+      - python
+      - python3
+    state: present
+  become: true

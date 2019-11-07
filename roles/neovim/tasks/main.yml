@@ -1,4 +1,13 @@
 ---
+- name: Install dependencies
+  package:
+    name: "{{ item }}"
+    state: present
+  become: true
+  with_items:
+    - git
+    - gnupg2
+
 - include_tasks: os_specific/{{ ansible_distribution }}.yml
 
 - name: Install Neovim
@@ -37,15 +46,6 @@
     owner: "{{ ansible_user_id }}"
     group: "{{ ansible_user_id }}"
     mode: '0644'
-
-- name: Install dependencies
-  package:
-    name: "{{ item }}"
-    state: present
-  become: true
-  with_items:
-    - git
-    - gnupg2
 
 - name: Install plugins
   command: nvim -c PlugInstall -c q -c q

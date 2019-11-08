@@ -1,11 +1,6 @@
 ---
 - name: Install basic packages
   package:
-    name:
-      - git
-      - tmux
-      - curl
-      - python
-      - python3
+    name: "{{ basic_packages }}"
     state: present
   become: true

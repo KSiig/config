@@ -83,6 +83,7 @@ set shiftwidth=2 smarttab
 nnoremap <Leader>q  :q<CR>
 nnoremap <Leader>wq :wq<CR>
 nnoremap <Leader>f  :NERDTreeToggle<CR><C-W><C-L>
+nnoremap <Leader>F  :NERDTreeCWD<CR>
 nnoremap <Leader>p  <C-]>
 nnoremap <Leader>h  <C-W>h
 nnoremap <Leader>j  <C-W>j

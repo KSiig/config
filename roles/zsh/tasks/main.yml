@@ -1,42 +1,36 @@
 ---
 - name: Install dependencies
   package:
-    name:
-      - zsh
-      - git
+    name: "{{ zsh_dependencies }}"
     state: present
   become: true
 
 - name: Change shell to zsh
   user:
-    name: "{{ ansible_user_id }}"
-    shell: /bin/zsh
+    name: "{{ zsh_user }}"
+    shell: "{{ zsh_shell }}"
   become: true
 
 - name: Clone oh-my-zsh to host
   git:
-    repo: https://github.com/robbyrussell/oh-my-zsh
-    version: master
-    dest: "/home/{{ ansible_user_id }}/.oh-my-zsh"
+    repo: "{{ zsh_oh_my_zsh_repo }}"
+    version: "{{ zsh_oh_my_zsh_version }}"
+    dest: "{{ zsh_oh_my_zsh_dest }}"
     depth: 1
 
 - name: Clone oh-my-zsh plugins to host
   git:
     repo: "https://github.com/{{ item.owner }}/{{ item.repo }}"
     version: master
-    dest: "/home/{{ ansible_user_id }}/.oh-my-zsh/plugins/{{ item.repo }}"
-  with_items:
-    - owner: djui
-      repo: alias-tips
-    - owner: zsh-users
-      repo: zsh-syntax-highlighting
+    dest: "{{ zsh_plugin_dir }}/{{ item.repo }}"
+  with_items: "{{ zsh_plugins }}"
 
 - name: Copy config files to host
   copy:
     src: "{{ item }}"
-    dest: "/home/{{ ansible_user_id }}/"
-    owner: "{{ ansible_user_id }}"
-    group: "{{ ansible_user_id }}"
-    mode: '0644'
+    dest: "{{ zsh_config_dest }}"
+    owner: "{{ zsh_config_owner }}"
+    group: "{{ zsh_config_group }}"
+    mode: "{{ zsh_config_mode }}"
   with_fileglob:
-    - files/.*
+    - "{{ zsh_config_src }}"

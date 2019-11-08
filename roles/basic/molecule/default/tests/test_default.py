@@ -22,3 +22,6 @@ def test_packages_installed(host):
 
     python3 = host.package('python3')
     assert python3.is_installed
+
+    unzip = host.package('unzip')
+    assert unzip.is_installed

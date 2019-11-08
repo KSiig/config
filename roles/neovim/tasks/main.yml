@@ -4,48 +4,46 @@
     name: "{{ item }}"
     state: present
   become: true
-  with_items:
-    - git
-    - gnupg2
+  with_items: "{{ neovim_dependencies }}"
 
-- include_tasks: os_specific/{{ ansible_distribution }}.yml
+- include_tasks: "os_specific/{{ ansible_distribution }}.yml"
 
 - name: Install Neovim
   apt:
-    name: neovim
+    name: "{{ neovim_name }}"
   become: true
 
 - name: Create Neovim config folder
   file:
-    path: ~/.config/nvim
-    owner: "{{ ansible_user_id }}"
-    group: "{{ ansible_user_id }}"
-    mode: '0744'
+    path: "{{ neovim_config_dir }}"
+    owner: "{{ neovim_config_owner }}"
+    group: "{{ neovim_config_group }}"
+    mode: "{{ neovim_config_mode }}"
     state: directory
 
 - name: Place configuration file
   copy:
-    src: files/init.vim
-    dest: ~/.config/nvim/init.vim
-    owner: "{{ ansible_user_id }}"
-    group: "{{ ansible_user_id }}"
-    mode: '0644'
+    src: "{{ neovim_file_src }}"
+    dest: "{{ neovim_file_dest }}"
+    owner: "{{ neovim_file_owner }}"
+    group: "{{ neovim_file_group }}"
+    mode: "{{ neovim_file_mode }}"
 
 - name: Create Neovim config folder
   file:
-    path: ~/.local/share/nvim/site/autoload
-    owner: "{{ ansible_user_id }}"
-    group: "{{ ansible_user_id }}"
-    mode: '0744'
+    path: "{{ neovim_plugin_dir }}"
+    owner: "{{ neovim_plugin_owner }}"
+    group: "{{ neovim_plugin_group }}"
+    mode: "{{ neovim_plugin_mode }}"
     state: directory
 
 - name: Download vim-plug
   get_url:
-    url: https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-    dest: ~/.local/share/nvim/site/autoload/plug.vim
-    owner: "{{ ansible_user_id }}"
-    group: "{{ ansible_user_id }}"
-    mode: '0644'
+    url: "{{ neovim_plug_url }}"
+    dest: "{{ neovim_plug_dest }}"
+    owner: "{{ neovim_plug_owner }}"
+    group: "{{ neovim_plug_group }}"
+    mode: "{{ neovim_plug_mode }}"
 
 - name: Install plugins
   command: nvim -c PlugInstall -c q -c q

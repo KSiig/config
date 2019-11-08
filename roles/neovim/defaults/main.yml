@@ -1,3 +1,30 @@
 ---
+neovim_dependencies:
+  - git
+  - gnupg2
+
 neovim_name: neovim
+
 neovim_ppa: ppa:neovim-ppa/stable
+
+neovim_config_dir: "/home/{{ ansible_user_id }}/.config/nvim"
+neovim_config_owner: "{{ ansible_user_id }}"
+neovim_config_group: "{{ ansible_user_id }}"
+neovim_config_mode: "0744"
+
+neovim_file_src: files/init.vim
+neovim_file_dest: "/home/{{ ansible_user_id }}/.config/nvim/init.vim"
+neovim_file_owner: "{{ ansible_user_id }}"
+neovim_file_group: "{{ ansible_user_id }}"
+neovim_file_mode: "0744"
+
+neovim_plugin_dir: "/home/{{ ansible_user_id }}/.local/share/nvim/site/autoload"
+neovim_plugin_owner: "{{ ansible_user_id }}"
+neovim_plugin_group: "{{ ansible_user_id }}"
+neovim_plugin_mode: "0744"
+
+neovim_plug_url: https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+neovim_plug_dest: ~/.local/share/nvim/site/autoload/plug.vim
+neovim_plug_owner: "{{ ansible_user_id }}"
+neovim_plug_group: "{{ ansible_user_id }}"
+neovim_plug_mode: "0644"

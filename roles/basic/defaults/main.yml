@@ -1,2 +1,8 @@
 ---
-# defaults file for basic
+basic_packages:
+  - git
+  - tmux
+  - curl
+  - python
+  - python3
+  - unzip

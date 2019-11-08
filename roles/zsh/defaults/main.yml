@@ -1,2 +1,24 @@
 ---
-# defaults file for zsh
+zsh_dependencies:
+  - zsh
+  - git
+
+zsh_user: "{{ ansible_user_id }}"
+zsh_shell: /bin/zsh
+
+zsh_oh_my_zsh_repo: https://github.com/robbyrussell/oh-my-zsh
+zsh_oh_my_zsh_version: master
+zsh_oh_my_zsh_dest: "/home/{{ ansible_user_id }}/.oh-my-zsh"
+
+zsh_plugin_dir: "/home/{{ ansible_user_id }}/.oh-my-zsh/plugins"
+zsh_plugins:
+  - owner: djui
+    repo: alias-tips
+  - owner: zsh-users
+    repo: zsh-syntax-highlighting
+
+zsh_config_src: files/*
+zsh_config_dest: "/home/{{ ansible_user_id }}/"
+zsh_config_owner: "{{ ansible_user_id }}"
+zsh_config_group: "{{ ansible_user_id }}"
+zsh_config_mode: "0644"

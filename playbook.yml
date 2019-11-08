@@ -9,11 +9,7 @@
     tmux_conf_local: files/.tmux.conf.local.personal
   tasks:
     - name: Clone repos
-      git:
-        repo: "git@github.com:{{ item.owner }}/{{ item.repo }}"
-        dest: "{{ item.dest }}"
-        version: master
-      register: git_out
+      include: clone_git_repos.yml repo={{ item }}
       with_items:
         - owner: kaspersiig
           repo: riddler-backend
@@ -21,8 +17,6 @@
         - owner: kaspersiig
           repo: riddler-frontend
           dest: ~/Programming/js/riddler/riddler-frontend
-      ignore_errors: true
-
 - hosts: servers
   roles:
     - basic

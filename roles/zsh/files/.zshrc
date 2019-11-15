@@ -108,3 +108,4 @@ if [[ -a $HOME/.zcustom ]]; then . $HOME/.zcustom; fi
 if [[ -a $HOME/.kubectl_aliases ]]; then . $HOME/.kubectl_aliases; fi
 
 export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
+export PATH="$PATH:/home/$(whoami)/.local/bin"

@@ -7,8 +7,8 @@ tmux_conf_owner: "{{ ansible_user_id }}"
 tmux_conf_group: "{{ ansible_user_id }}"
 tmux_conf_mode: "0644"
 
-tmux_conf_local_src: files/.tmux.conf
-tmux_conf_local_dest: "/home/{{ ansible_user_id}}/.tmux.conf"
+tmux_conf_local_src: files/.tmux.conf.local
+tmux_conf_local_dest: "/home/{{ ansible_user_id}}/.tmux.conf.local"
 tmux_conf_local_owner: "{{ ansible_user_id }}"
 tmux_conf_local_group: "{{ ansible_user_id }}"
 tmux_conf_local_mode: "0644"

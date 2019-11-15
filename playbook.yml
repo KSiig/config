@@ -6,7 +6,7 @@
     - tmux
     - zsh
   vars:
-    tmux_conf_local: files/.tmux.conf.local.personal
+    tmux_conf_local_src: files/.tmux.conf.local.personal
   tasks:
     - name: Clone repos
       include: clone_git_repos.yml repo={{ item }}

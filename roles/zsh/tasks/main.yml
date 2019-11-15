@@ -32,5 +32,4 @@
     owner: "{{ zsh_config_owner }}"
     group: "{{ zsh_config_group }}"
     mode: "{{ zsh_config_mode }}"
-  with_fileglob:
-    - "{{ zsh_config_src }}"
+  with_fileglob: "{{ zsh_config_src }}"

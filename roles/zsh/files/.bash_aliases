@@ -9,6 +9,10 @@ alias weather='curl wttr.in'
 alias showip='curl ifconfig.io'
 alias watch='watch -n 0.5 '
 
+alias docker='sudo docker'
+alias docker-compose='sudo docker-compose'
+alias dcp='docker-compose'
+
 if hash brew &> /dev/null 
 then
   alias ctags="`brew --prefix`/bin/ctags"

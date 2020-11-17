@@ -16,6 +16,7 @@ alias watch='watch -n 0.5 '
 alias docker='sudo docker'
 alias docker-compose='sudo docker-compose'
 alias dcp='docker-compose'
+alias dud='docker-compose down && docker-compose up'
 
 # Alias - Git
 alias gu='git fetch origin $1 && git pull origin $1'

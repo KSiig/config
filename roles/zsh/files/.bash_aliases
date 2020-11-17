@@ -17,6 +17,9 @@ alias docker='sudo docker'
 alias docker-compose='sudo docker-compose'
 alias dcp='docker-compose'
 alias dud='docker-compose down && docker-compose up'
+alias dcp_service_name="cat docker-compose.yml | yq .services | jq -r 'keys[] as \$k | \"\(\$k)\"'"
+alias dex='docker-compose exec $(dcp_service_name) bash'
+alias dux='dud && dex'
 
 # Alias - Git
 alias gu='git fetch origin $1 && git pull origin $1'

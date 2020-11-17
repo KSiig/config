@@ -1,3 +1,4 @@
+# Alias - File navigation
 alias ..="cd .."
 alias ...="cd ../.."
 alias ....="cd ../../.."
@@ -5,14 +6,21 @@ alias .....="cd ../../../.."
 alias ......="cd ../../../../.."
 alias l='ls -l'
 alias ll='ls -la'
+
+# Alias - Utilities
 alias weather='curl wttr.in'
 alias showip='curl ifconfig.io'
 alias watch='watch -n 0.5 '
 
+# Alias - Docker
 alias docker='sudo docker'
 alias docker-compose='sudo docker-compose'
 alias dcp='docker-compose'
 
+# Alias - Git
+alias gu='git fetch origin $1 && git pull origin $1'
+
+# Only enable things if the needed commands exist
 if hash brew &> /dev/null 
 then
   alias ctags="`brew --prefix`/bin/ctags"

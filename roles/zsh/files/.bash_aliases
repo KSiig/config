@@ -11,6 +11,7 @@ alias ll='ls -la'
 alias weather='curl wttr.in'
 alias showip='curl ifconfig.io'
 alias watch='watch -n 0.5 '
+alias sb='source ~/.bash_aliases'
 
 # Alias - Docker
 export DCP_FILENAME='docker-compose.yml'
@@ -25,6 +26,19 @@ alias dux='dud -d && dex'
 
 # Alias - Git
 alias gu='git fetch origin $1 && git pull origin $1'
+function gro {
+  ORIGIN_URL=$(git remote get-url --push origin)
+  if [[ "$ORIGIN_URL" == *"visualstudio"* || "$ORIGIN_URL" == *"azure"* ]]; then
+    SUFFIX=$(echo $ORIGIN_URL | sed 's/^[^\/]*\///g')
+    URL_PT1=$(echo $SUFFIX | sed 's![^/]*$!!')
+    URL_PT2=$(echo $SUFFIX | sed 's@.*/@@')
+    URL="https://dev.azure.com/${URL_PT1}_git/$URL_PT2"
+    wslview $URL
+  else
+    echo "Unknown origin"
+  fi
+}
+
 
 # Only enable things if the needed commands exist
 if hash brew &> /dev/null 

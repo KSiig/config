@@ -34,6 +34,10 @@ function gro {
     URL_PT2=$(echo $SUFFIX | sed 's@.*/@@')
     URL="https://dev.azure.com/${URL_PT1}_git/$URL_PT2"
     wslview $URL
+  elif [[ "$ORIGIN_URL" == *"git@github"* ]]; then
+    REPO_URL=$(echo $ORIGIN_URL | sed 's@.*:@@')
+    URL="https://github.com/$REPO_URL"
+    wslview $URL
   else
     echo "Unknown origin"
   fi

@@ -6,8 +6,6 @@
   become: true
   with_items: "{{ neovim_dependencies }}"
 
-- include_tasks: "os_specific/{{ ansible_distribution }}.yml"
-
 - name: Install Neovim
   apt:
     name: "{{ neovim_name }}"

@@ -1,8 +1,2 @@
-[personal]
+[local]
 127.0.0.1 ansible_connection=local ansible_host=localhost
-
-[servers]
-siig-hv1.ad.siig.tech
-siig-cs1.ad.siig.tech
-siig-px1.ad.siig.tech
-siig-uc1.ad.siig.tech

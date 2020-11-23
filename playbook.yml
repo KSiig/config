@@ -1,5 +1,5 @@
 ---
-- hosts: personal
+- hosts: local
   roles:
     - basic
     - neovim
@@ -7,9 +7,3 @@
     - zsh
   vars:
     tmux_conf_local_src: files/.tmux.conf.local.personal
-- hosts: servers
-  roles:
-    - basic
-    - neovim
-    - tmux
-    - zsh

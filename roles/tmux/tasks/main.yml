@@ -5,18 +5,26 @@
     state: present
   become: true
 
-- name: Copy config files to host
-  copy:
+- name: Check if folder exists
+  stat:
+    path: "{{ repo_dest }}"
+  register: file_details
+
+- name: Clone Tmux Config
+  git:
+    repo: "{{ repo_clone_url }}"
+    dest: "{{ repo_dest }}"
+    version: "{{ repo_version }}"
+  when: not file_details.stat.exists
+
+- name: Create symlink to .tmux.conf
+  file:
     src: "{{ tmux_conf_src }}"
     dest: "{{ tmux_conf_dest }}"
-    owner: "{{ tmux_conf_owner }}"
-    group: "{{ tmux_conf_group }}"
-    mode: "{{ tmux_conf_mode }}"
+    state: link
 
-- name: Copy config files to host
+- name: Copy .tmux.conf.local
   copy:
-    src: "{{ tmux_conf_local_src }}"
-    dest: "{{ tmux_conf_local_dest }}"
-    owner: "{{ tmux_conf_local_owner }}"
-    group: "{{ tmux_conf_local_group }}"
-    mode: "{{ tmux_conf_local_mode }}"
+    src: "{{ tmux_conf_src }}.local"
+    dest: "{{ tmux_conf_dest }}.local"
+    remote_src: yes

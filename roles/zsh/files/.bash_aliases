@@ -64,3 +64,5 @@ then
         alias tmuxr='tmux-session restore'
 fi
 
+# Environment Variables
+export PATH=$PATH:$GOPATH/bin

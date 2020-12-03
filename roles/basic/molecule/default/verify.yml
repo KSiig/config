@@ -1,0 +1,20 @@
+---
+# This is an example playbook to execute Ansible tests.
+
+- name: Verify
+  hosts: all
+  gather_facts: false
+  tasks:
+  - name: "Get installed packages"
+    package_facts:
+      manager: auto
+    
+  - name: Verify git installed
+    assert:
+      that: "'{{ item }}' in ansible_facts.packages"
+    loop:
+      - git
+      - tmux
+      - curl
+      - python3
+      - unzip

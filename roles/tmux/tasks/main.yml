@@ -1,4 +1,14 @@
 ---
+- name: Update packages
+  apt:
+    update_cache: true
+
+- name: Install Git
+  package:
+    name: "git"
+    state: present
+  become: true
+
 - name: Install Tmux
   package:
     name: "{{ tmux_name }}"

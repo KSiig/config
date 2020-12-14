@@ -1,4 +1,8 @@
 ---
+- name: Update packages
+  apt:
+    update_cache: true
+
 - name: Install dependencies
   package:
     name: "{{ zsh_dependencies }}"

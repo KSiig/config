@@ -1,4 +1,8 @@
 ---
+- name: Update packages
+  apt:
+    update_cache: true
+
 - name: Install basic packages
   package:
     name: "{{ basic_packages }}"

@@ -1,0 +1,41 @@
+---
+# This is an example playbook to execute Ansible tests.
+
+- name: Verify
+  hosts: all
+  gather_facts: false
+  tasks:
+  - name: "Get installed packages"
+    package_facts:
+      manager: auto
+  
+  - name: Verify packages are installed
+    assert:
+      that: "'{{ item }}' in ansible_facts.packages"
+    loop:
+      - zsh
+      - git
+
+  - name: Get directory status - oh-my-zsh
+    stat:
+      path: /home/root/.oh-my-zsh
+    register: oh_my_zsh_stat
+  - name: Check directory exists - oh-my-zsh
+    assert:
+      that: oh_my_zsh_stat.stat.exists
+
+  - name: Get file status - oh-my-zsh-plugins
+    stat:
+      path: /home/root/.oh-my-zsh/plugins
+    register: oh_my_zsh_plugins_stat
+  - name: Check directory exists - oh-my-zsh-plugins
+    assert:
+      that: oh_my_zsh_plugins_stat.stat.exists
+
+  - name: Get file status - kubectl aliases
+    stat:
+      path: /home/root/.kubectl_aliases
+    register: kubectl_aliases_stat
+  - name: Check directory exists - kubectl aliases
+    assert:
+      that: kubectl_aliases_stat.stat.exists

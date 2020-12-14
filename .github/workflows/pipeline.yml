@@ -1,0 +1,17 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  test:
+    name: Test all roles
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run test
+        run: make test

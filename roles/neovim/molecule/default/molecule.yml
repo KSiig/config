@@ -3,26 +3,14 @@ dependency:
   name: galaxy
 driver:
   name: docker
-lint:
-  name: yamllint
 platforms:
   - name: ubuntu
-    image: ubuntu:bionic
-    privileged: true
-  - name: debian
-    image: debian:buster
+    image: ubuntu:20.04
     privileged: true
 provisioner:
   name: ansible
-  lint:
-    name: ansible-lint
-  inventory:
-    host_vars:
-      ubuntu:
-        ansible_user: ansible
-      debian:
-        ansible_user: ansible
+  config_options:
+    defaults:
+      interpreter_python: /usr/bin/python3
 verifier:
-  name: testinfra
-  lint:
-    name: flake8
+  name: ansible

@@ -1,0 +1,29 @@
+---
+# This is an example playbook to execute Ansible tests.
+
+- name: Verify
+  hosts: all
+  gather_facts: false
+  tasks:
+  - name: "Get installed packages"
+    package_facts:
+      manager: auto
+    
+  - debug:
+      msg: "{{ ansible_facts.packages }}"
+  
+  - name: Verify git installed
+    assert:
+      that: "'{{ item }}' in ansible_facts.packages"
+    loop:
+      - git
+      - gnupg2
+      - neovim
+
+  - name: Get directory status - neovim_config_dir
+    stat:
+      path: /home/{{ ansible_user_id }}/.config/nvim
+    register: neovim_config_dir_stat
+  - name: Check directory exists - neovim_config_dir
+    assert:
+      that: neovim_config_dir_stat.stat.exists

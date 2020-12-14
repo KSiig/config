@@ -8,9 +8,6 @@
   - name: "Get installed packages"
     package_facts:
       manager: auto
-    
-  - debug:
-      msg: "{{ ansible_facts.packages }}"
   
   - name: Verify git installed
     assert:
@@ -22,8 +19,16 @@
 
   - name: Get directory status - neovim_config_dir
     stat:
-      path: /home/{{ ansible_user_id }}/.config/nvim
+      path: /home/root/.config/nvim
     register: neovim_config_dir_stat
   - name: Check directory exists - neovim_config_dir
     assert:
       that: neovim_config_dir_stat.stat.exists
+
+  - name: Get directory status - vim-plug
+    stat:
+      path: /home/root/.local/share/nvim/site/autoload/plug.vim
+    register: neovim_vim_plug_stat
+  - name: Check directory exists - vim-plug
+    assert:
+      that: neovim_vim_plug_stat.stat.exists

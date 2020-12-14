@@ -14,5 +14,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
+      - name: Install dependencies
+        run: |
+          DEBIAN_INTERACTIVE=noninteractive
+          apt update && \
+          apt install python3-pip -y && \
+          pip3 install molecule molecule-docker pytest
       - name: Run test
         run: make test

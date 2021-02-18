@@ -14,11 +14,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
-      - name: Install dependencies
+      - name: Test all roles
         run: |
-          DEBIAN_INTERACTIVE=noninteractive
-          sudo apt update && \
-          sudo apt install python3-pip python3-setuptools -y && \
-          pip3 install molecule molecule-docker pytest
+          make docker_test
       - name: Run test
         run: make test

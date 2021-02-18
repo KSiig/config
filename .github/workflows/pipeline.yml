@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - main
-      - fail
+      - test/fail
   pull_request:
     branches:
       - main

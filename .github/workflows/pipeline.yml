@@ -21,5 +21,5 @@ jobs:
           make docker_test
       - name: Run test
         run: |
-        set -e
-        make test
+          set -e
+          make test

@@ -23,7 +23,7 @@ Here's a comprehensive list of the tools used in this project, and why they're u
 You can install using the script found in the root of this project.
 
 ```bash
-curl -o- https://raw.githubusercontent.com/KSiig/config/master/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/KSiig/config/master/install.sh | bash
 ```
 
 ## Manual Install

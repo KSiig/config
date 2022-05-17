@@ -1,0 +1,5 @@
+make --dry-run --always-make --keep-going --print-directory
+make: Entering directory '/workspaces/config'
+find ./roles -maxdepth 1 -type d -exec make -C {} test \;
+make: Leaving directory '/workspaces/config'
+ 

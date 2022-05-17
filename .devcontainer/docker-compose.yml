@@ -2,15 +2,15 @@ version: '3'
 
 services:
   app:
-    build: 
+    build:
       context: .
       dockerfile: Dockerfile
     init: true
     volumes:
       # Forwards the local Docker socket to the container.
-      - /var/run/docker.sock:/var/run/docker-host.sock 
+      - /var/run/docker.sock:/var/run/docker.sock
       # Update this to wherever you want VS Code to mount the folder of your project
       - ..:/app:cached
       - ${HOME}/.ssh:/home/vscode/.ssh
-    command: sleep infinity 
+    command: sleep infinity
     working_dir: /app

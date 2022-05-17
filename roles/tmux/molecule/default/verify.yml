@@ -5,26 +5,26 @@
   hosts: all
   gather_facts: false
   tasks:
-  - name: "Get installed packages"
-    package_facts:
-      manager: auto
-  
-  - name: Verify git installed
-    assert:
-      that: "'tmux' in ansible_facts.packages"
+    - name: "Get installed packages"
+      package_facts:
+        manager: auto
 
-  - name: Get directory status - tmux
-    stat:
-      path: /home/root/.tmux
-    register: tmux_dir_stat
-  - name: Check directory exists - tmux
-    assert:
-      that: tmux_dir_stat.stat.exists
+    - name: Verify tmux installed
+      assert:
+        that: "'tmux' in ansible_facts.packages"
 
-  - name: Get file status - tmux config
-    stat:
-      path: /home/root/.tmux.conf
-    register: tmux_config_stat
-  - name: Check directory exists - tmux config
-    assert:
-      that: tmux_config_stat.stat.exists
+    - name: Get directory status - tmux
+      stat:
+        path: /home/root/.tmux
+      register: tmux_dir_stat
+    - name: Check directory exists - tmux
+      assert:
+        that: tmux_dir_stat.stat.exists
+
+    - name: Get file status - tmux config
+      stat:
+        path: /home/root/.tmux.conf
+      register: tmux_config_stat
+    - name: Check directory exists - tmux config
+      assert:
+        that: tmux_config_stat.stat.exists

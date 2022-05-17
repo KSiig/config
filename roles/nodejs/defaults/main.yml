@@ -1,0 +1,11 @@
+---
+nodejs_dependencies:
+  - git
+  - gnupg2
+  - gpg
+  - apt-transport-https
+  - gcc
+  - g++
+  - make
+
+node_version_major: 16

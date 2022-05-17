@@ -1,0 +1,5 @@
+---
+brew_dependencies:
+  - git
+  - gnupg2
+  - gpg

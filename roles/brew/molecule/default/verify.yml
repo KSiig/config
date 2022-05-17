@@ -1,0 +1,14 @@
+---
+# This is an example playbook to execute Ansible tests.
+
+- name: Verify
+  hosts: all
+  gather_facts: false
+  tasks:
+    - name: "Get installed packages"
+      package_facts:
+        manager: auto
+
+    - name: Verify nodejs installed
+      assert:
+        that: "'nodejs' in ansible_facts.packages"

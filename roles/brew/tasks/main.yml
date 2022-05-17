@@ -1,0 +1,15 @@
+---
+- name: Update packages
+  apt:
+    update_cache: true
+  become: true
+
+- name: Install dependencies
+  package:
+    name: "{{ item }}"
+    state: present
+  become: true
+  with_items: "{{ brew_dependencies }}"
+
+- name: Install brew
+  ansible.builtin.shell: /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"

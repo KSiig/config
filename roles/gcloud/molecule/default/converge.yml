@@ -1,0 +1,7 @@
+---
+- name: Converge
+  hosts: all
+  tasks:
+    - name: "Include gcloud"
+      include_role:
+        name: "gcloud"

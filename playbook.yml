@@ -7,5 +7,6 @@
     - zsh
     - nodejs
     - brew
+    - gcloud
   vars:
     tmux_conf_local_src: files/.tmux.conf.local.personal

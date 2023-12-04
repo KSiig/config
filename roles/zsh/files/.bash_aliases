@@ -24,6 +24,20 @@ alias dud='(ddown || docker-compose down) && docker-compose up'
 alias dex='docker-compose exec $(dcp_service_name) bash'
 alias dux='dud -d && dex'
 
+# Alias - Morningscore
+
+alias mssvcup='cd $MS_ENV_DIR && ./bin/up'
+alias mssvcdown='cd $MS_ENV_DIR && ./bin/down'
+alias mssvccup='cd $MS_ENV_DIR && ./bin/up && ./bin/up-crawler'
+alias mssvcrs='cd $MS_ENV_DIR && ./bin/restart'
+alias mssvcrb='cd $MS_ENV_DIR && ./bin/down && ./bin/up'
+alias mssvccrb='cd $MS_ENV_DIR && ./bin/down && ./bin/up && ./bin/up-crawler'
+alias mslogsc='cd $MS_ENV_DIR && ./bin/logs-crawler'
+alias mscsta='cd $MS_ENV_DIR && node ../../services/tester/onsite/crawl-start.js'
+alias mscsto='cd $MS_ENV_DIR && node ../../services/tester/onsite/crawl-stop.js'
+alias mssshgitlab='_ cp ~/.ssh/gitlab ~/.ssh/id_rsa && _ cp ~/.ssh/gitlab.pub ~/.ssh/id_rsa.pub'
+alias mssshksi='_ cp ~/.ssh/id_rsa.bak ~/.ssh/id_rsa && _ cp ~/.ssh/id_rsa.pub.bak ~/.ssh/id_rsa.pub'
+
 # Alias - Git
 alias gu='git fetch origin $1 && git pull origin $1'
 function gro {
@@ -52,16 +66,21 @@ fi
 
 if hash kubectl &> /dev/null 
 then
-    alias helm='sudo helm'
-      alias kw='watch -n 0.5 "kubectl config current-context; echo ''; kubectl config view | grep namespace; echo ''; 
+    # alias helm='sudo helm'
+    alias kw='watch -n 0.5 "kubectl config current-context; echo ''; kubectl config view | grep namespace; echo ''; 
                   kubectl get namespace,node,ingress,pod,svc,job,cronjob,deployment,rs,pv,pvc,secret,ep -o wide"'
 fi
 
 if hash tmux &> /dev/null 
 then
     alias tmux='tmux -f $HOME/.tmux.conf'
-      alias tmuxs='tmux-session save'
-        alias tmuxr='tmux-session restore'
+    alias tmuxs='tmux-session save'
+    alias tmuxr='tmux-session restore'
+fi
+
+if hash terraform &> /dev/null 
+then
+    alias tf='terraform'
 fi
 
 # Environment Variables

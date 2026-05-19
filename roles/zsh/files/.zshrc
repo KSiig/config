@@ -109,3 +109,15 @@ if [[ -a $HOME/.kubectl_aliases ]]; then . $HOME/.kubectl_aliases; fi
 
 export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
 export PATH="$PATH:/home/$(whoami)/.local/bin"
+export PATH="$PATH:/home/ksi/.local/share/pipx/venvs/ansible/bin"
+
+# The next line updates PATH for the Google Cloud SDK.
+if [ -f '/tmp/tmp.wtVaRDqrUN/google-cloud-sdk/path.zsh.inc' ]; then . '/tmp/tmp.wtVaRDqrUN/google-cloud-sdk/path.zsh.inc'; fi
+
+# The next line enables shell command completion for gcloud.
+if [ -f '/tmp/tmp.wtVaRDqrUN/google-cloud-sdk/completion.zsh.inc' ]; then . '/tmp/tmp.wtVaRDqrUN/google-cloud-sdk/completion.zsh.inc'; fi
+
+
+# speedscale env vars
+export SPEEDSCALE_HOME=/home/ksi/.speedscale
+export PATH=$PATH:$SPEEDSCALE_HOME

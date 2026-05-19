@@ -15,8 +15,8 @@ alias sb='source ~/.bash_aliases'
 
 # Alias - Docker
 export DCP_FILENAME='docker-compose.yml'
-alias docker='sudo docker'
-alias docker-compose='sudo docker-compose -f $DCP_FILENAME'
+#alias docker='sudo docker'
+#alias docker-compose='sudo docker-compose -f $DCP_FILENAME'
 alias dcp_service_name="cat $DCP_FILENAME | yq -r .services | jq -r 'keys[] as \$k | \"\(\$k)\"'"
 alias dcp='docker-compose'
 alias ddown='docker stop $(cat $DCP_FILENAME | yq -r .services.$(dcp_service_name).container_name) && docker rm $(cat $DCP_FILENAME | yq -r .services.$(dcp_service_name).container_name)'
@@ -84,13 +84,32 @@ then
 fi
 
 # Environment Variables
+export GOPATH=$HOME/go
 export PATH=$PATH:$GOPATH/bin
+export PATH=$PATH:/usr/local/go/bin
 
 # Powerline
-GOPATH=$HOME/go
 function _update_ps1() {
   PS1="$($GOPATH/bin/powerline-go -error $?)"
 }
 if [ "$TERM" != "linux"  ] && [ -f "$GOPATH/bin/powerline-go"  ]; then
   PROMPT_COMMAND="_update_ps1; $PROMPT_COMMAND"
 fi
+
+# CloudSim
+export GIT_PASSWORD="${GIT_PASSWORD:-}"
+alias flux_rec="flux reconcile source git flux-system -n flux-system && flux reconcile kustomization loki -n flux-system"
+alias kx="k config current-context"
+alias k3s_proxy="az connectedk8s proxy -n k3s -g cloudsim-aks"
+kubectx() {
+  command kubectx "$@" && tmux refresh-client -S 2>/dev/null || true
+}
+
+kubens() {
+  command kubens "$@" && tmux refresh-client -S 2>/dev/null || true
+}
+
+# Misc.
+alias cdtmp="cd $(mktemp -d)"
+
+if [[ -a $HOME/.bash_aliases.local ]]; then . $HOME/.bash_aliases.local; fi

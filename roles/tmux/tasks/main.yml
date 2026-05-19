@@ -34,8 +34,9 @@
     dest: "{{ tmux_conf_dest }}"
     state: link
 
-- name: Copy .tmux.conf.local
-  copy:
-    src: "{{ tmux_conf_src }}.local"
+- name: Create symlink to .tmux.conf.local
+  file:
+    src: "{{ tmux_conf_local_src }}"
     dest: "{{ tmux_conf_dest }}.local"
-    remote_src: yes
+    state: link
+    force: true

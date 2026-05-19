@@ -30,11 +30,10 @@
     dest: "{{ zsh_plugin_dir }}/{{ item.repo }}"
   with_items: "{{ zsh_plugins }}"
 
-- name: Copy config files to host
-  copy:
+- name: Link config files into home
+  file:
     src: "{{ item }}"
-    dest: "{{ zsh_config_dest }}"
-    owner: "{{ zsh_config_owner }}"
-    group: "{{ zsh_config_group }}"
-    mode: "{{ zsh_config_mode }}"
-  with_fileglob: "{{ zsh_config_src }}"
+    dest: "{{ zsh_config_dest }}{{ item | basename }}"
+    state: link
+    force: true
+  loop: "{{ query('fileglob', role_path + '/files/.*') }}"

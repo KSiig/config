@@ -97,7 +97,6 @@ if [ "$TERM" != "linux"  ] && [ -f "$GOPATH/bin/powerline-go"  ]; then
 fi
 
 # CloudSim
-export GIT_PASSWORD="${GIT_PASSWORD:-}"
 alias flux_rec="flux reconcile source git flux-system -n flux-system && flux reconcile kustomization loki -n flux-system"
 alias kx="k config current-context"
 alias k3s_proxy="az connectedk8s proxy -n k3s -g cloudsim-aks"

@@ -1,0 +1,5 @@
+---
+- name: Install Neovim via Homebrew
+  community.general.homebrew:
+    name: "{{ neovim_name }}"
+    state: present

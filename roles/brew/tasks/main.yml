@@ -1,15 +1,24 @@
 ---
-- name: Update packages
+- name: Update apt cache (Debian-family)
   apt:
     update_cache: true
   become: true
+  when: ansible_os_family == "Debian"
 
-- name: Install dependencies
+- name: Install dependencies (Debian-family)
   package:
     name: "{{ item }}"
     state: present
   become: true
   with_items: "{{ brew_dependencies }}"
+  when: ansible_os_family == "Debian"
+
+- name: Check whether brew is already installed
+  ansible.builtin.command: command -v brew
+  register: brew_check
+  changed_when: false
+  failed_when: false
 
 - name: Install brew
   ansible.builtin.shell: /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+  when: brew_check.rc != 0

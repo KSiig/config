@@ -8,9 +8,9 @@ zsh_shell: /bin/zsh
 
 zsh_oh_my_zsh_repo: https://github.com/robbyrussell/oh-my-zsh
 zsh_oh_my_zsh_version: master
-zsh_oh_my_zsh_dest: "/home/{{ ansible_user_id }}/.oh-my-zsh"
+zsh_oh_my_zsh_dest: "{{ ansible_env.HOME }}/.oh-my-zsh"
 
-zsh_plugin_dir: "/home/{{ ansible_user_id }}/.oh-my-zsh/plugins"
+zsh_plugin_dir: "{{ ansible_env.HOME }}/.oh-my-zsh/plugins"
 zsh_plugins:
   - owner: djui
     repo: alias-tips
@@ -19,7 +19,7 @@ zsh_plugins:
 
 zsh_config_src:
   - "files/.*"
-zsh_config_dest: "/home/{{ ansible_user_id }}/"
+zsh_config_dest: "{{ ansible_env.HOME }}/"
 zsh_config_owner: "{{ ansible_user_id }}"
 zsh_config_group: "{{ ansible_user_id }}"
 zsh_config_mode: "0644"

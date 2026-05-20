@@ -1,20 +1,7 @@
 ---
-- name: Update packages
-  apt:
-    update_cache: true
-  become: true
-
-- name: Install dependencies
-  package:
-    name: "{{ item }}"
-    state: present
-  become: true
-  with_items: "{{ neovim_dependencies }}"
-
-- name: Install Neovim
-  apt:
-    name: "{{ neovim_name }}"
-  become: true
+- name: Install Neovim (per-OS)
+  include_tasks: "os_specific/{{ ansible_distribution }}.yml"
+  when: ansible_distribution in ['Ubuntu', 'Debian', 'MacOSX']
 
 - name: Create Neovim config folder
   file:
@@ -32,7 +19,7 @@
     group: "{{ neovim_file_group }}"
     mode: "{{ neovim_file_mode }}"
 
-- name: Create Neovim config folder
+- name: Create Neovim plugin autoload folder
   file:
     path: "{{ neovim_plugin_dir }}"
     owner: "{{ neovim_plugin_owner }}"

@@ -8,5 +8,3 @@
     - brew
     - gcloud
     - claude
-  vars:
-    tmux_conf_local_src: files/.tmux.conf.local.personal

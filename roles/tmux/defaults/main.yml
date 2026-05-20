@@ -1,10 +1,10 @@
 ---
 tmux_name: tmux
 
-repo_dest: "/home/{{ ansible_user_id}}/.tmux"
+repo_dest: "{{ ansible_env.HOME }}/.tmux"
 repo_clone_url: "https://github.com/gpakosz/.tmux.git"
 repo_version: "master"
 
-tmux_conf_src: "/home/{{ ansible_user_id}}/.tmux/.tmux.conf"
-tmux_conf_dest: "/home/{{ ansible_user_id}}/.tmux.conf"
+tmux_conf_src: "{{ ansible_env.HOME }}/.tmux/.tmux.conf"
+tmux_conf_dest: "{{ ansible_env.HOME }}/.tmux.conf"
 tmux_conf_local_src: "{{ playbook_dir }}/roles/tmux/files/.tmux.conf.local"

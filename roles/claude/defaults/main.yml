@@ -1,5 +1,5 @@
 ---
-claude_home: "/home/{{ ansible_user_id }}/.claude"
+claude_home: "{{ ansible_env.HOME }}/.claude"
 
 claude_subdirs:
   - agents

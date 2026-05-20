@@ -40,6 +40,20 @@ alias mssshksi='_ cp ~/.ssh/id_rsa.bak ~/.ssh/id_rsa && _ cp ~/.ssh/id_rsa.pub.b
 
 # Alias - Git
 alias gu='git fetch origin $1 && git pull origin $1'
+
+# Open URL with the platform's default opener (wslview on WSL, open on macOS, xdg-open on Linux)
+function _open_url {
+  if command -v wslview >/dev/null 2>&1; then
+    wslview "$1"
+  elif command -v open >/dev/null 2>&1; then
+    open "$1"
+  elif command -v xdg-open >/dev/null 2>&1; then
+    xdg-open "$1"
+  else
+    echo "No URL opener found: $1"
+  fi
+}
+
 function gro {
   ORIGIN_URL=$(git remote get-url --push origin)
   if [[ "$ORIGIN_URL" == *"visualstudio"* || "$ORIGIN_URL" == *"azure"* ]]; then
@@ -47,11 +61,11 @@ function gro {
     URL_PT1=$(echo $SUFFIX | sed 's![^/]*$!!')
     URL_PT2=$(echo $SUFFIX | sed 's@.*/@@')
     URL="https://dev.azure.com/${URL_PT1}_git/$URL_PT2"
-    wslview $URL
+    _open_url "$URL"
   elif [[ "$ORIGIN_URL" == *"git@github"* ]]; then
     REPO_URL=$(echo $ORIGIN_URL | sed 's@.*:@@')
     URL="https://github.com/$REPO_URL"
-    wslview $URL
+    _open_url "$URL"
   else
     echo "Unknown origin"
   fi

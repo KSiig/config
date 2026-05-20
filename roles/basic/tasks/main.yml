@@ -1,11 +1,12 @@
 ---
-- name: Update packages
+- name: Update apt cache (Debian-family)
   apt:
     update_cache: true
   become: true
+  when: ansible_os_family == "Debian"
 
 - name: Install basic packages
   package:
     name: "{{ basic_packages }}"
     state: present
-  become: true
+  become: "{{ ansible_os_family != 'Darwin' }}"

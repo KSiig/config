@@ -1,0 +1,11 @@
+---
+- name: Install Google Cloud SDK via Homebrew Cask
+  community.general.homebrew_cask:
+    name: google-cloud-sdk
+    state: present
+
+- name: Install GKE auth plugin via gcloud components
+  ansible.builtin.command: gcloud components install gke-gcloud-auth-plugin --quiet
+  register: gke_plugin
+  changed_when: "'Installing' in gke_plugin.stdout or 'installed' in gke_plugin.stdout"
+  failed_when: gke_plugin.rc != 0 and 'already installed' not in gke_plugin.stdout

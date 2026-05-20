@@ -1,20 +1,23 @@
 ---
-- name: Update packages
+- name: Update apt cache (Debian-family)
   apt:
     update_cache: true
   become: true
+  when: ansible_os_family == "Debian"
 
-- name: Install dependencies
+- name: Install dependencies (Debian-family)
   package:
     name: "{{ zsh_dependencies }}"
     state: present
   become: true
+  when: ansible_os_family == "Debian"
 
-- name: Change shell to zsh
+- name: Change shell to zsh (Debian-family)
   user:
     name: "{{ zsh_user }}"
     shell: "{{ zsh_shell }}"
   become: true
+  when: ansible_os_family == "Debian"
 
 - name: Clone oh-my-zsh to host
   git:

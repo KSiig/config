@@ -107,17 +107,25 @@ if [[ -a $HOME/.bash_aliases ]]; then . $HOME/.bash_aliases; fi
 if [[ -a $HOME/.zcustom ]]; then . $HOME/.zcustom; fi
 if [[ -a $HOME/.kubectl_aliases ]]; then . $HOME/.kubectl_aliases; fi
 
+# Homebrew (Apple Silicon at /opt/homebrew, Intel at /usr/local)
+if [[ -x /opt/homebrew/bin/brew ]]; then
+  eval "$(/opt/homebrew/bin/brew shellenv)"
+elif [[ -x /usr/local/bin/brew ]]; then
+  eval "$(/usr/local/bin/brew shellenv)"
+fi
+
 export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
-export PATH="$PATH:/home/$(whoami)/.local/bin"
-export PATH="$PATH:/home/ksi/.local/share/pipx/venvs/ansible/bin"
+export PATH="$PATH:$HOME/.local/bin"
+export PATH="$PATH:$HOME/.local/share/pipx/venvs/ansible/bin"
 
-# The next line updates PATH for the Google Cloud SDK.
-if [ -f '/tmp/tmp.wtVaRDqrUN/google-cloud-sdk/path.zsh.inc' ]; then . '/tmp/tmp.wtVaRDqrUN/google-cloud-sdk/path.zsh.inc'; fi
-
-# The next line enables shell command completion for gcloud.
-if [ -f '/tmp/tmp.wtVaRDqrUN/google-cloud-sdk/completion.zsh.inc' ]; then . '/tmp/tmp.wtVaRDqrUN/google-cloud-sdk/completion.zsh.inc'; fi
-
+# Google Cloud SDK (Homebrew cask location on macOS)
+if [ -f "$(brew --prefix 2>/dev/null)/share/google-cloud-sdk/path.zsh.inc" ]; then
+  . "$(brew --prefix)/share/google-cloud-sdk/path.zsh.inc"
+fi
+if [ -f "$(brew --prefix 2>/dev/null)/share/google-cloud-sdk/completion.zsh.inc" ]; then
+  . "$(brew --prefix)/share/google-cloud-sdk/completion.zsh.inc"
+fi
 
 # speedscale env vars
-export SPEEDSCALE_HOME=/home/ksi/.speedscale
+export SPEEDSCALE_HOME=$HOME/.speedscale
 export PATH=$PATH:$SPEEDSCALE_HOME

@@ -1,20 +1,21 @@
 ---
-- name: Update packages
+- name: Update apt cache (Debian-family)
   apt:
     update_cache: true
   become: true
+  when: ansible_os_family == "Debian"
 
 - name: Install Git
   package:
     name: "git"
     state: present
-  become: true
+  become: "{{ ansible_os_family != 'Darwin' }}"
 
 - name: Install Tmux
   package:
     name: "{{ tmux_name }}"
     state: present
-  become: true
+  become: "{{ ansible_os_family != 'Darwin' }}"
 
 - name: Check if folder exists
   stat:

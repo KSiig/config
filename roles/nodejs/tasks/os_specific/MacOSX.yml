@@ -1,0 +1,7 @@
+---
+- name: Install Node.js and Yarn via Homebrew
+  community.general.homebrew:
+    name:
+      - node
+      - yarn
+    state: present

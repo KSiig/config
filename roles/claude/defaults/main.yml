@@ -1,0 +1,7 @@
+---
+claude_home: "/home/{{ ansible_user_id }}/.claude"
+
+claude_subdirs:
+  - agents
+  - output-styles
+  - skills

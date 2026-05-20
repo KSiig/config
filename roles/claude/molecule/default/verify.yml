@@ -1,0 +1,53 @@
+---
+- name: Verify
+  hosts: all
+  gather_facts: false
+  tasks:
+    - name: Stat ~/.claude subdirectories
+      stat:
+        path: "/root/.claude/{{ item }}"
+      loop:
+        - agents
+        - output-styles
+        - skills
+      register: claude_subdir_stats
+
+    - name: Subdirectories exist
+      assert:
+        that: item.stat.exists and item.stat.isdir
+      loop: "{{ claude_subdir_stats.results }}"
+      loop_control:
+        label: "{{ item.item }}"
+
+    - name: Stat seeded agent symlink
+      stat:
+        path: /root/.claude/agents/docs-writer.md
+      register: claude_agent_link
+
+    - name: Agent is a symlink that resolves
+      assert:
+        that:
+          - claude_agent_link.stat.exists
+          - claude_agent_link.stat.islnk
+
+    - name: Stat seeded output-style symlink
+      stat:
+        path: /root/.claude/output-styles/docs-aware-default.md
+      register: claude_output_style_link
+
+    - name: Output style is a symlink that resolves
+      assert:
+        that:
+          - claude_output_style_link.stat.exists
+          - claude_output_style_link.stat.islnk
+
+    - name: Stat seeded skill directory symlink
+      stat:
+        path: /root/.claude/skills/repo-docs-structure
+      register: claude_skill_link
+
+    - name: Skill is a symlink to a directory
+      assert:
+        that:
+          - claude_skill_link.stat.exists
+          - claude_skill_link.stat.islnk

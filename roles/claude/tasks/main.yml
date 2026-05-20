@@ -1,0 +1,49 @@
+---
+- name: Ensure ~/.claude subdirectories exist
+  file:
+    path: "{{ claude_home }}/{{ item }}"
+    state: directory
+  loop: "{{ claude_subdirs }}"
+
+- name: Find agent files in role
+  find:
+    paths: "{{ role_path }}/files/agents"
+    file_type: file
+  register: claude_agent_files
+
+- name: Link agents into ~/.claude/agents
+  file:
+    src: "{{ item.path }}"
+    dest: "{{ claude_home }}/agents/{{ item.path | basename }}"
+    state: link
+    force: true
+  loop: "{{ claude_agent_files.files }}"
+
+- name: Find output-style files in role
+  find:
+    paths: "{{ role_path }}/files/output-styles"
+    file_type: file
+  register: claude_output_style_files
+
+- name: Link output-styles into ~/.claude/output-styles
+  file:
+    src: "{{ item.path }}"
+    dest: "{{ claude_home }}/output-styles/{{ item.path | basename }}"
+    state: link
+    force: true
+  loop: "{{ claude_output_style_files.files }}"
+
+- name: Find skill directories in role
+  find:
+    paths: "{{ role_path }}/files/skills"
+    file_type: directory
+    recurse: false
+  register: claude_skill_dirs
+
+- name: Link skills into ~/.claude/skills
+  file:
+    src: "{{ item.path }}"
+    dest: "{{ claude_home }}/skills/{{ item.path | basename }}"
+    state: link
+    force: true
+  loop: "{{ claude_skill_dirs.files }}"

@@ -1,0 +1,15 @@
+---
+- name: Verify
+  hosts: all
+  gather_facts: false
+  tasks:
+    - name: Stat settings.json symlink
+      stat:
+        path: /tmp/vscode-User/settings.json
+      register: vscode_settings_link
+
+    - name: settings.json is a symlink that resolves
+      assert:
+        that:
+          - vscode_settings_link.stat.exists
+          - vscode_settings_link.stat.islnk

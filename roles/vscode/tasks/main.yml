@@ -1,0 +1,43 @@
+---
+- name: Set VSCode user dir (macOS)
+  set_fact:
+    vscode_user_dir: "{{ ansible_env.HOME }}/Library/Application Support/Code/User"
+  when:
+    - vscode_user_dir is not defined
+    - ansible_system == "Darwin"
+
+- name: Check for WSL Windows mount
+  stat:
+    path: /mnt/c/Users
+  register: vscode_wsl_mount
+  when:
+    - vscode_user_dir is not defined
+    - ansible_system == "Linux"
+
+- name: Set VSCode user dir (WSL -> Windows host)
+  set_fact:
+    vscode_user_dir: "/mnt/c/Users/{{ vscode_windows_user }}/AppData/Roaming/Code/User"
+  when:
+    - vscode_user_dir is not defined
+    - ansible_system == "Linux"
+    - vscode_wsl_mount.stat.exists | default(false)
+
+- name: Install VSCode settings
+  when: vscode_user_dir is defined
+  block:
+    - name: Ensure VSCode user directory exists
+      file:
+        path: "{{ vscode_user_dir }}"
+        state: directory
+
+    - name: Link VSCode settings.json
+      file:
+        src: "{{ role_path }}/files/settings.json"
+        dest: "{{ vscode_user_dir }}/settings.json"
+        state: link
+        force: true
+
+- name: Skip vscode role when no target platform detected
+  debug:
+    msg: "Skipping vscode role: not macOS and /mnt/c/Users not present."
+  when: vscode_user_dir is not defined

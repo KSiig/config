@@ -1,0 +1,430 @@
+{
+  "vim.useSystemClipboard": true,
+  "vim.useCtrlKeys": true,
+  "vim.normalModeKeyBindingsNonRecursive": [
+    {
+      "before": [
+        "<C-n>"
+      ],
+      "commands": [
+        ":nohl"
+      ]
+    },
+    {
+      "before": [
+        "<leader>",
+        "q"
+      ],
+      "after": [
+        ":",
+        "q",
+        "<CR>"
+      ]
+    },
+    {
+      "before": [
+        "<leader>",
+        "w",
+        "q"
+      ],
+      "after": [
+        ":",
+        "w",
+        "q",
+        "<CR>"
+      ]
+    },
+    {
+      "before": [
+        "<CR>"
+      ],
+      "after": [
+        ":",
+        "w",
+        "<CR>"
+      ]
+    },
+    {
+      "before": [
+        "<leader>",
+        "h"
+      ],
+      "after": [
+        "<C-w>",
+        "h"
+      ]
+    },
+    {
+      "before": [
+        "<leader>",
+        "j"
+      ],
+      "after": [
+        "<C-w>",
+        "j"
+      ]
+    },
+    {
+      "before": [
+        "<leader>",
+        "k"
+      ],
+      "after": [
+        "<C-w>",
+        "k"
+      ]
+    },
+    {
+      "before": [
+        "<leader>",
+        "l"
+      ],
+      "after": [
+        "<C-w>",
+        "l"
+      ]
+    },
+    {
+      "before": [
+        "<leader>",
+        "t"
+      ],
+      "after": [
+        "<C-t>"
+      ]
+    },
+    {
+      "before": [
+        "<leader>",
+        "o"
+      ],
+      "after": [
+        "<C-o>"
+      ]
+    },
+    {
+      "before": [
+        "<leader>",
+        "c"
+      ],
+      "commands": [
+        "workbench.action.terminal.toggleTerminal"
+      ]
+    },
+    {
+      "before": [
+        "<leader>",
+        "z"
+      ],
+      "commands": [
+        "workbench.action.minimizeOtherEditors"
+      ]
+    },
+    {
+      "before": [
+        "<leader>",
+        "Z"
+      ],
+      "commands": [
+        "workbench.action.evenEditorWidths"
+      ]
+    },
+    {
+      "before": [
+        "<leader>",
+        "r"
+      ],
+      "after": [
+        "\"",
+        "q"
+      ]
+    },
+    {
+      "before": [
+        "<leader>",
+        "p"
+      ],
+      "after": [
+        "<C-o>"
+      ]
+    },
+    {
+      "before": [
+        "<leader>",
+        "i"
+      ],
+      "commands": [
+        "editor.action.commentLine"
+      ],
+      "when": "editorTextFocus && !editorReadonly"
+    }
+  ],
+  "vim.leader": " ",
+  "vs-kubernetes": {
+    "vs-kubernetes.minikube-path": "/Users/ksi/.vs-kubernetes/tools/minikube/darwin-amd64/minikube"
+  },
+  "window.nativeTabs": true,
+  "javascript.updateImportsOnFileMove.enabled": "always",
+  "emmet.showSuggestionsAsSnippets": true,
+  "emmet.triggerExpansionOnTab": true,
+  "editor.quickSuggestions": {
+    "comments": "on",
+    "strings": "on",
+    "other": "on"
+  },
+  "emmet.includeLanguages": {
+    "javascript": "javascriptreact"
+  },
+  "editor.tabSize": 2,
+  "peacock.favoriteColors": [
+    {
+      "name": "Angular Red",
+      "value": "#b52e31"
+    },
+    {
+      "name": "Auth0 Orange",
+      "value": "#eb5424"
+    },
+    {
+      "name": "Azure Blue",
+      "value": "#007fff"
+    },
+    {
+      "name": "C# Purple",
+      "value": "#68217A"
+    },
+    {
+      "name": "Gatsby Purple",
+      "value": "#639"
+    },
+    {
+      "name": "Go Cyan",
+      "value": "#5dc9e2"
+    },
+    {
+      "name": "Java Blue-Gray",
+      "value": "#557c9b"
+    },
+    {
+      "name": "JavaScript Yellow",
+      "value": "#f9e64f"
+    },
+    {
+      "name": "Mandalorian Blue",
+      "value": "#1857a4"
+    },
+    {
+      "name": "Node Green",
+      "value": "#215732"
+    },
+    {
+      "name": "React Blue",
+      "value": "#00b3e6"
+    },
+    {
+      "name": "Something Different",
+      "value": "#832561"
+    },
+    {
+      "name": "Vue Green",
+      "value": "#42b883"
+    }
+  ],
+  "workbench.iconTheme": "material-icon-theme",
+  "prettier.useTabs": true,
+  "keyboard.dispatch": "keyCode",
+  "workbench.editor.highlightModifiedTabs": true,
+  "workbench.editor.showTabs": "single",
+  "terminal.integrated.rendererType": "canvas",
+  "editor.formatOnSave": true,
+  "terminal.integrated.sendKeybindingsToShell": true,
+  "explorer.confirmDragAndDrop": false,
+  "editor.wordSeparators": "`~!@#$%^&*()-=+[{]}\\|;:'\",.<>/?_",
+  "github.copilot.nextEditSuggestions.enabled": true,
+  "git.confirmSync": false,
+  "markdown-preview-enhanced.previewTheme": "atom-dark.css",
+  "git.autofetch": true,
+  "workbench.editorAssociations": {
+    "*.copilotmd": "vscode.markdown.preview.editor",
+    "{git,gitlens,chat-editing-snapshot-text-model,copilot,git-graph,git-graph-3}:/**/*.qrc": "default",
+    "*.qrc": "qt-core.qrcEditor"
+  },
+  "chat.viewSessions.orientation": "stacked",
+  "chat.editing.confirmEditRequestRemoval": false,
+  "mssql.connectionGroups": [
+    {
+      "name": "ROOT",
+      "id": "ROOT"
+    }
+  ],
+  "mssql.connections": [
+    {
+      "server": "cloudsim-elastic-sql.database.windows.net",
+      "database": "DevPortalNC",
+      "user": "cloudsimdbadmin",
+      "password": "",
+      "authenticationType": "SqlLogin",
+      "encrypt": "true",
+      "trustServerCertificate": true,
+      "connectTimeout": 30,
+      "commandTimeout": 30,
+      "connectRetryCount": 1,
+      "connectRetryInterval": 10,
+      "applicationName": "vscode-mssql",
+      "savePassword": true,
+      "groupId": "ROOT",
+      "id": "97f03824-e59c-46ba-a1b3-4224e1b8f843"
+    }
+  ],
+  "chat.tools.terminal.autoApprove": {
+    "cd": true,
+    "echo": true,
+    "ls": true,
+    "dir": true,
+    "pwd": true,
+    "cat": true,
+    "head": true,
+    "tail": true,
+    "findstr": true,
+    "wc": true,
+    "tr": true,
+    "cut": true,
+    "cmp": true,
+    "which": true,
+    "basename": true,
+    "dirname": true,
+    "realpath": true,
+    "readlink": true,
+    "stat": true,
+    "file": true,
+    "od": true,
+    "du": true,
+    "df": true,
+    "sleep": true,
+    "nl": true,
+    "grep": true,
+    "printf": true,
+    "/^git(\\s+(-C\\s+\\S+|--no-pager))*\\s+status\\b/": true,
+    "/^git(\\s+(-C\\s+\\S+|--no-pager))*\\s+log\\b/": true,
+    "/^git(\\s+(-C\\s+\\S+|--no-pager))*\\s+log\\b.*\\s--output(=|\\s|$)/": false,
+    "/^git(\\s+(-C\\s+\\S+|--no-pager))*\\s+show\\b/": true,
+    "/^git(\\s+(-C\\s+\\S+|--no-pager))*\\s+diff\\b/": true,
+    "/^git(\\s+(-C\\s+\\S+|--no-pager))*\\s+ls-files\\b/": true,
+    "/^git(\\s+(-C\\s+\\S+|--no-pager))*\\s+grep\\b/": true,
+    "/^git(\\s+(-C\\s+\\S+|--no-pager))*\\s+branch\\b/": true,
+    "/^git(\\s+(-C\\s+\\S+|--no-pager))*\\s+branch\\b.*\\s-(d|D|m|M|-delete|-force)\\b/": false,
+    "/^docker\\s+(ps|images|info|version|inspect|logs|top|stats|port|diff|search|events)\\b/": true,
+    "/^docker\\s+(container|image|network|volume|context|system)\\s+(ls|ps|inspect|history|show|df|info)\\b/": true,
+    "/^docker\\s+compose\\s+(ps|ls|top|logs|images|config|version|port|events)\\b/": true,
+    "Get-ChildItem": true,
+    "Get-Content": true,
+    "Get-Date": true,
+    "Get-Random": true,
+    "Get-Location": true,
+    "Set-Location": true,
+    "Write-Host": true,
+    "Write-Output": true,
+    "Out-String": true,
+    "Split-Path": true,
+    "Join-Path": true,
+    "Start-Sleep": true,
+    "Where-Object": true,
+    "/^Select-[a-z0-9]/i": true,
+    "/^Measure-[a-z0-9]/i": true,
+    "/^Compare-[a-z0-9]/i": true,
+    "/^Format-[a-z0-9]/i": true,
+    "/^Sort-[a-z0-9]/i": true,
+    "/^npm\\s+(ls|list|outdated|view|info|show|explain|why|root|prefix|bin|search|doctor|fund|repo|bugs|docs|home|help(-search)?)\\b/": true,
+    "/^npm\\s+config\\s+(list|get)\\b/": true,
+    "/^npm\\s+pkg\\s+get\\b/": true,
+    "/^npm\\s+audit$/": true,
+    "/^npm\\s+cache\\s+verify\\b/": true,
+    "/^yarn\\s+(list|outdated|info|why|bin|help|versions)\\b/": true,
+    "/^yarn\\s+licenses\\b/": true,
+    "/^yarn\\s+audit\\b(?!.*\\bfix\\b)/": true,
+    "/^yarn\\s+config\\s+(list|get)\\b/": true,
+    "/^yarn\\s+cache\\s+dir\\b/": true,
+    "/^pnpm\\s+(ls|list|outdated|why|root|bin|doctor)\\b/": true,
+    "/^pnpm\\s+licenses\\b/": true,
+    "/^pnpm\\s+audit\\b(?!.*\\bfix\\b)/": true,
+    "/^pnpm\\s+config\\s+(list|get)\\b/": true,
+    "npm ci": true,
+    "/^yarn\\s+install\\s+--frozen-lockfile\\b/": true,
+    "/^pnpm\\s+install\\s+--frozen-lockfile\\b/": true,
+    "column": true,
+    "/^column\\b.*\\s-c\\s+[0-9]{4,}/": false,
+    "date": true,
+    "/^date\\b.*\\s(-s|--set)\\b/": false,
+    "find": true,
+    "/^find\\b.*\\s-(delete|exec|execdir|fprint|fprintf|fls|ok|okdir)\\b/": false,
+    "rg": true,
+    "/^rg\\b.*\\s(--pre|--hostname-bin)\\b/": false,
+    "sed": true,
+    "/^sed\\b.*\\s(-[a-zA-Z]*(e|f)[a-zA-Z]*|--expression|--file)\\b/": false,
+    "/^sed\\b.*s\\/.*\\/.*\\/[ew]/": false,
+    "/^sed\\b.*;W/": false,
+    "sort": true,
+    "/^sort\\b.*\\s-(o|S)\\b/": false,
+    "tree": true,
+    "/^tree\\b.*\\s-o\\b/": false,
+    "/^xxd$/": true,
+    "/^xxd\\b(\\s+-\\S+)*\\s+[^-\\s]\\S*$/": true,
+    "rm": false,
+    "rmdir": false,
+    "del": false,
+    "Remove-Item": false,
+    "ri": false,
+    "rd": false,
+    "erase": false,
+    "dd": false,
+    "kill": false,
+    "ps": false,
+    "top": false,
+    "Stop-Process": false,
+    "spps": false,
+    "taskkill": false,
+    "taskkill.exe": false,
+    "curl": false,
+    "wget": false,
+    "Invoke-RestMethod": false,
+    "Invoke-WebRequest": false,
+    "irm": false,
+    "iwr": false,
+    "chmod": false,
+    "chown": false,
+    "Set-ItemProperty": false,
+    "sp": false,
+    "Set-Acl": false,
+    "jq": false,
+    "xargs": false,
+    "eval": false,
+    "Invoke-Expression": false,
+    "iex": false,
+    "kubectl config": true,
+    "kubectl get": true,
+    "/kubectl.*get/": true,
+    "/kubectl.*describe/": true,
+    "/kubectl.*logs/": true,
+    "kubectl kustomize": true,
+    "kubectl apply --dry-run": true,
+    "diff": true,
+    "helm": true,
+    "yq": true,
+    "find . -name \"*.php\" -print0 | xargs -0 -n 1 php -l | grep -v \"No syntax errors detected\"": true,
+    "php -l": true,
+    "make -n": true,
+    "bash -n": true,
+    "git remote -v": true
+  },
+  "chat.fontSize": 14,
+  "chat.tools.urls.autoApprove": {
+    "https://code.visualstudio.com": true,
+    "https://github.com/microsoft/vscode/wiki/*": true,
+    "https://grafana.github.io/helm-charts": true,
+    "https://grafana.com/docs": true,
+    "https://docs.openclaw.ai": true
+  },
+  "remote.autoForwardPortsSource": "hybrid",
+  "claudeCode.preferredLocation": "panel",
+  "claudeCode.useTerminal": true
+}

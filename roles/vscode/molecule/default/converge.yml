@@ -1,0 +1,9 @@
+---
+- name: Converge
+  hosts: all
+  vars:
+    vscode_user_dir: /tmp/vscode-User
+  tasks:
+    - name: "Include vscode"
+      include_role:
+        name: "vscode"

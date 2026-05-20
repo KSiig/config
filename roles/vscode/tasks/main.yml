@@ -30,12 +30,47 @@
         path: "{{ vscode_user_dir }}"
         state: directory
 
-    - name: Link VSCode settings.json
+    - name: Link VSCode user files
       file:
-        src: "{{ role_path }}/files/settings.json"
-        dest: "{{ vscode_user_dir }}/settings.json"
+        src: "{{ role_path }}/files/{{ item }}"
+        dest: "{{ vscode_user_dir }}/{{ item }}"
         state: link
         force: true
+      loop:
+        - settings.json
+        - keybindings.json
+        - tasks.json
+
+- name: Install VSCode extensions
+  when:
+    - vscode_user_dir is defined
+    - vscode_extensions | length > 0
+  block:
+    - name: Locate VSCode CLI
+      command: which code
+      register: vscode_cli
+      changed_when: false
+      failed_when: false
+
+    - name: List installed VSCode extensions
+      command: code --list-extensions
+      register: vscode_installed_ext
+      changed_when: false
+      when: vscode_cli.rc == 0
+
+    - name: Install missing VSCode extensions
+      command: "code --install-extension {{ item }} --force"
+      loop: "{{ vscode_extensions }}"
+      when:
+        - vscode_cli.rc == 0
+        - item | lower not in (vscode_installed_ext.stdout_lines | default([]) | map('lower') | list)
+
+    - name: Warn if VSCode CLI is missing
+      debug:
+        msg: >-
+          `code` not on PATH; skipping extension install. In VSCode run
+          "Shell Command: Install 'code' command in PATH" from the command palette.
+      when: vscode_cli.rc != 0
 
 - name: Skip vscode role when no target platform detected
   debug:

@@ -85,11 +85,40 @@ then
                   kubectl get namespace,node,ingress,pod,svc,job,cronjob,deployment,rs,pv,pvc,secret,ep -o wide"'
 fi
 
-if hash tmux &> /dev/null 
+if hash tmux &> /dev/null
 then
     alias tmux='tmux -f $HOME/.tmux.conf'
     alias tmuxs='tmux-session save'
     alias tmuxr='tmux-session restore'
+
+    # Override oh-my-zsh tmux plugin's ts/ta to track the active session
+    # in the tmux server env. VS Code "Claude: Pin selection" keybinding
+    # reads CLAUDE_TMUX_TARGET via `tmux show-env -g` to know which pane
+    # to send `@file#start-end` references to.
+    ts() {
+      local name="$1"
+      if [[ -z "$name" || "${name:0:1}" == '-' ]]; then
+        tmux new-session "$@"
+        return
+      fi
+      if tmux has-session -t "$name" 2>/dev/null; then
+        print -u2 "duplicate session: $name"
+        return 1
+      fi
+      tmux new-session -d -s "$name"
+      tmux setenv -g CLAUDE_TMUX_TARGET "$name"
+      tmux attach -t "$name"
+    }
+
+    ta() {
+      local name="$1"
+      if [[ -z "$name" || "${name:0:1}" == '-' ]]; then
+        tmux attach "$@"
+        return
+      fi
+      tmux setenv -g CLAUDE_TMUX_TARGET "$name" 2>/dev/null
+      tmux attach -t "$name"
+    }
 fi
 
 if hash terraform &> /dev/null 

@@ -1,0 +1,8 @@
+[
+  {
+    "key": "cmd+alt+k",
+    "command": "workbench.action.tasks.runTask",
+    "args": "Claude: Pin selection",
+    "when": "editorTextFocus"
+  }
+]

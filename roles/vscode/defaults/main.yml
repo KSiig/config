@@ -1,2 +1,4 @@
 ---
 vscode_windows_user: kaspe
+vscode_extensions:
+  - rioj7.command-variable

@@ -3,13 +3,20 @@
   hosts: all
   gather_facts: false
   tasks:
-    - name: Stat settings.json symlink
+    - name: Stat VSCode user-file symlinks
       stat:
-        path: /tmp/vscode-User/settings.json
-      register: vscode_settings_link
+        path: "/tmp/vscode-User/{{ item }}"
+      loop:
+        - settings.json
+        - keybindings.json
+        - tasks.json
+      register: vscode_user_links
 
-    - name: settings.json is a symlink that resolves
+    - name: VSCode user files are symlinks that resolve
       assert:
         that:
-          - vscode_settings_link.stat.exists
-          - vscode_settings_link.stat.islnk
+          - item.stat.exists
+          - item.stat.islnk
+      loop: "{{ vscode_user_links.results }}"
+      loop_control:
+        label: "{{ item.item }}"

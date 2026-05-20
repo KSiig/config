@@ -1,0 +1,32 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Claude: Pin selection",
+      "type": "shell",
+      "command": "bash",
+      "args": [
+        "-lc",
+        "target=$(tmux show-env -g CLAUDE_TMUX_TARGET 2>/dev/null | sed 's/^[^=]*=//'); [ -n \"$target\" ] && tmux send-keys -t \"$target\" \"${input:claudePinRef}\""
+      ],
+      "presentation": {
+        "reveal": "never",
+        "panel": "dedicated",
+        "showReuseMessage": false,
+        "clear": true,
+        "close": true
+      },
+      "problemMatcher": []
+    }
+  ],
+  "inputs": [
+    {
+      "id": "claudePinRef",
+      "type": "command",
+      "command": "extension.commandvariable.transform",
+      "args": {
+        "text": "@${relativeFile}#${command:extension.commandvariable.selectionStartLineNumber}-${command:extension.commandvariable.selectionEndLineNumber} "
+      }
+    }
+  ]
+}

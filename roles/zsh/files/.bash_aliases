@@ -80,9 +80,7 @@ fi
 
 if hash kubectl &> /dev/null 
 then
-    # alias helm='sudo helm'
-    alias kw='watch -n 0.5 "kubectl config current-context; echo ''; kubectl config view | grep namespace; echo ''; 
-                  kubectl get namespace,node,ingress,pod,svc,job,cronjob,deployment,rs,pv,pvc,secret,ep -o wide"'
+    alias helm='sudo helm'
 fi
 
 if hash tmux &> /dev/null
@@ -143,6 +141,22 @@ fi
 alias flux_rec="flux reconcile source git flux-system -n flux-system && flux reconcile kustomization loki -n flux-system"
 alias kx="k config current-context"
 alias k3s_proxy="az connectedk8s proxy -n k3s -g cloudsim-aks"
+
+# kubectl-watch the same resource as a previous `kubectl get`. Pass the last
+# command via history expansion, e.g. `kw !!` after running `kgksall`. Accepts
+# either an alias name (expanded to its definition) or a full command line.
+kw() {
+  local cmd="$*"
+  local def
+  def=$(alias "$cmd" 2>/dev/null) && {
+    cmd=${def#*=}   # drop the "alias name=" / "name=" prefix
+    cmd=${cmd#\'}   # strip surrounding single quotes
+    cmd=${cmd%\'}
+  }
+  cmd=${cmd/kubectl get/kubectl-watch}
+  eval "$cmd"
+}
+
 kubectx() {
   command kubectx "$@" && tmux refresh-client -S 2>/dev/null || true
 }

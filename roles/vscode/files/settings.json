@@ -426,5 +426,6 @@
   },
   "remote.autoForwardPortsSource": "hybrid",
   "claudeCode.preferredLocation": "panel",
-  "claudeCode.useTerminal": true
+  "claudeCode.useTerminal": true,
+  "explorer.confirmDelete": false
 }

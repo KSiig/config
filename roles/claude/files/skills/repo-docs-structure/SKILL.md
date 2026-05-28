@@ -17,6 +17,26 @@ The user typically invokes this as `/repo-docs-structure <repo or docs area to i
 - create missing folders and files
 - reorganize misplaced material
 - leave a clean split between stable docs, open items, and working notes
+- keep READMEs thin: a pointer to `docs/`, not a home for detail
+
+## README convention
+
+A README is an entry point, not a manual. It states what the repo is, what it's
+for, and how the pieces relate — then links into `docs/` for everything
+operational. Specifically:
+
+- **Root `README.md`**: repo purpose, high-level architecture, and a short
+  "Documentation" section linking to the relevant `docs/` pages. No command
+  reference, no setup walkthrough, no troubleshooting — those live in `docs/`.
+- **Subdirectory READMEs** (e.g. `terraform/README.md`): same rule at smaller
+  scope — what this directory is, then link to the `docs/` page(s) that cover
+  its commands and setup. Prefer a single `docs/` page over a fat sub-README.
+- **No parallel top-level docs** (e.g. `README-flux.md`, `SETUP.md`,
+  `DEPLOY.md` at the repo root). Fold these into `docs/` and link to them from
+  the README. The root should not accumulate sibling doc files.
+
+When normalizing, treat a fat README or a root-level `README-*.md` as content to
+relocate into `docs/`, leaving the README as a thin pointer.
 
 ## Procedure
 
@@ -28,8 +48,9 @@ The user typically invokes this as `/repo-docs-structure <repo or docs area to i
 6. If `ai/chat-notes/` is missing or mixed across unrelated topics, create or split it into topic-relevant files.
 7. Move flat or mixed open-items content into subject folders.
 8. Keep stable facts in `docs/`; move unresolved or verification-only material into `docs/90-open-items/`.
-9. Preserve existing content where possible — do not delete and rewrite when reorganization will do.
-10. Verify the resulting layout is coherent and routing pages still make sense.
+9. Normalize READMEs per the README convention: relocate detail (setup, commands, troubleshooting) and any root-level `README-*.md` into `docs/`, leaving the root README and any subdirectory READMEs as thin pointers that link into `docs/`. Verify a README's claims against repo reality before relocating — a stale README is rewritten from current state, not moved verbatim.
+10. Preserve existing content where possible — do not delete and rewrite when reorganization will do.
+11. Verify the resulting layout is coherent and routing pages still make sense.
 
 ## Decision Rules
 
@@ -47,9 +68,16 @@ Prefer minimal adaptation when:
 
 ## Quality Criteria
 
+Docs are primarily an **AI retrieval resource**: optimize for landing on the
+answer to a query, not for linear reading. That means small, self-contained,
+descriptively-named concern-files over monolithic topic files.
+
 Complete when:
 
-- stable documentation lives under `docs/`
+- stable documentation lives under `docs/`, organized as `docs/<subject>/<concern>.md`
+  — one concern per file, self-contained, named after the question it answers;
+  a subject that spans multiple concerns is a directory of files, not one page
+- each subject directory has an index (`README.md`) mapping concern → file
 - unresolved items are grouped under `docs/90-open-items/` by subject
 - working notes live under `ai/chat-notes/` in topic-specific files
 - any new subject area has the minimal starter files needed to be usable

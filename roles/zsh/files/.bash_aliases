@@ -145,7 +145,7 @@ alias k3s_proxy="az connectedk8s proxy -n k3s -g cloudsim-aks"
 # kubectl-watch the same resource as a previous `kubectl get`. Pass the last
 # command via history expansion, e.g. `kw !!` after running `kgksall`. Accepts
 # either an alias name (expanded to its definition) or a full command line.
-kw() {
+kwch() {
   local cmd="$*"
   local def
   def=$(alias "$cmd" 2>/dev/null) && {
@@ -154,6 +154,7 @@ kw() {
     cmd=${cmd%\'}
   }
   cmd=${cmd/kubectl get/kubectl-watch}
+  cmd=${cmd/#k get/kubectl-watch}
   eval "$cmd"
 }
 
@@ -169,3 +170,5 @@ kubens() {
 alias cdtmp="cd $(mktemp -d)"
 
 if [[ -a $HOME/.bash_aliases.local ]]; then . $HOME/.bash_aliases.local; fi
+
+alias frgit="flux reconcile source git flux-system -n flux-system"

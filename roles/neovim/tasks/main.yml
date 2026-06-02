@@ -11,13 +11,12 @@
     mode: "{{ neovim_config_mode }}"
     state: directory
 
-- name: Place configuration file
-  copy:
+- name: Link configuration file
+  file:
     src: "{{ neovim_file_src }}"
     dest: "{{ neovim_file_dest }}"
-    owner: "{{ neovim_file_owner }}"
-    group: "{{ neovim_file_group }}"
-    mode: "{{ neovim_file_mode }}"
+    state: link
+    force: true
 
 - name: Create Neovim plugin autoload folder
   file:

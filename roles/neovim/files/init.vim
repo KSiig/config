@@ -106,8 +106,8 @@ let g:airline_powerline_fonts = 1
 
 " File Searching Configuration
 set wildignore+=*node_modules*
-set conceallevel=1
-let g:indentLine_conceallevel=1
+set conceallevel=0
+let g:indentLine_conceallevel=0
 let g:rainbow_active = 1
 noremap <Up> <NOP>
 noremap <Down> <NOP>

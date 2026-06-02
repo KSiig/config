@@ -12,11 +12,8 @@ neovim_config_owner: "{{ ansible_user_id }}"
 neovim_config_group: "{{ ansible_user_gid }}"
 neovim_config_mode: "0744"
 
-neovim_file_src: files/init.vim
+neovim_file_src: "{{ role_path }}/files/init.vim"
 neovim_file_dest: "{{ ansible_env.HOME }}/.config/nvim/init.vim"
-neovim_file_owner: "{{ ansible_user_id }}"
-neovim_file_group: "{{ ansible_user_gid }}"
-neovim_file_mode: "0744"
 
 neovim_plugin_dir: "{{ ansible_env.HOME }}/.local/share/nvim/site/autoload"
 neovim_plugin_owner: "{{ ansible_user_id }}"

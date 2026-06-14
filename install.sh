@@ -6,8 +6,9 @@ CONFIG_DIR="${HOME}/config"
 install_linux() {
   sudo apt update
   sudo apt upgrade -y
-  sudo apt install -y python3 python3-pip git
-  pip3 install --user ansible
+  sudo apt install -y python3 git pipx
+  pipx install ansible --include-deps
+  pipx ensurepath
 }
 
 install_macos() {

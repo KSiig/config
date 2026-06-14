@@ -129,3 +129,13 @@ fi
 # speedscale env vars
 export SPEEDSCALE_HOME=$HOME/.speedscale
 export PATH=$PATH:$SPEEDSCALE_HOME
+
+# claude-tmux daemon: tracks Claude Code session statuses in the background
+# so the popup (prefix+C) reflects state changes that happened while closed.
+CLAUDE_TMUX_BIN="$HOME/Code/claude-tmux/target/release/claude-tmux"
+if [[ -x "$CLAUDE_TMUX_BIN" ]]; then
+  pgrep -f "claude-tmux --headless" >/dev/null || "$CLAUDE_TMUX_BIN" --headless >/dev/null 2>&1 &!
+fi
+
+# Scaleway CLI autocomplete initialization.
+eval "$(scw autocomplete script shell=zsh)"

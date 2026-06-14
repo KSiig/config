@@ -1,11 +1,11 @@
 ---
 name: repo-docs-structure
-description: Bootstrap or normalize a repository's documentation layout to the preferred structure with `docs/`, `docs/90-open-items/<subject>/`, `docs/91-tech-debt/<subject>/`, and topic-scoped `ai/chat-notes/`. Use when a repo has no `docs/90-open-items/` folder, no `docs/91-tech-debt/` folder, no `ai/chat-notes/`, flat or mixed open-items files, accepted shortcuts that are not recorded anywhere, catch-all chat notes mixing unrelated topics, ad-hoc documentation notes that need organizing, or when the user says things like "set up docs", "bootstrap docs layout", "fix the docs structure", "normalize this repo's docs", or "this repo's docs are a mess".
+description: Bootstrap or normalize a repository's documentation layout to the preferred structure with numbered topic folders (`00-start-here/`, `01-reference/`, `10-<subject>/`), `docs/90-open-items/<subject>/` with domain-numbered items, `docs/91-tech-debt/<subject>/`, and topic-scoped `ai/chat-notes/`. Use when a repo has no `docs/90-open-items/` folder, no `docs/91-tech-debt/` folder, no `ai/chat-notes/`, flat or mixed open-items files, accepted shortcuts that are not recorded anywhere, catch-all chat notes mixing unrelated topics, ad-hoc documentation notes that need organizing, unnumbered topic folders, folders without README indexes or scope rules, or when the user says things like "set up docs", "bootstrap docs layout", "fix the docs structure", "normalize this repo's docs", or "this repo's docs are a mess".
 ---
 
 # Repository Docs Structure
 
-The canonical layout, open-items folder contents, graduation criteria, drift rule, and anti-patterns are defined in `~/.claude/shared/preferred-docs-structure.md`. Read that file first — it is the source of truth, this skill is the procedure.
+The canonical layout, numbering convention, open-items format, graduation criteria, drift rule, and anti-patterns are defined in `~/.claude/shared/preferred-docs-structure.md`. Read that file first — it is the source of truth, this skill is the procedure.
 
 The user typically invokes this as `/repo-docs-structure <repo or docs area to inspect, plus any subject areas that should exist>`.
 
@@ -14,7 +14,11 @@ The user typically invokes this as `/repo-docs-structure <repo or docs area to i
 - inspect the repo's current documentation layout
 - compare it against the canonical structure
 - preserve existing useful content
-- create missing folders and files
+- create numbered topic folders with gap numbering
+- create `00-start-here/` and `01-reference/` layers
+- add README.md with navigation table + scope rule to every folder
+- create `90-open-items/` with domain-numbered individual item files
+- create `91-tech-debt/` with rationale and re-evaluation triggers
 - reorganize misplaced material
 - leave a clean split between stable docs, open items, and working notes
 - keep READMEs thin: a pointer to `docs/`, not a home for detail
@@ -38,19 +42,31 @@ operational. Specifically:
 When normalizing, treat a fat README or a root-level `README-*.md` as content to
 relocate into `docs/`, leaving the README as a thin pointer.
 
+## Folder README convention
+
+Every folder in the `docs/` tree must have a `README.md` containing:
+
+1. A **navigation table** mapping files to their purpose.
+2. A **scope rule** stating what belongs and what doesn't.
+3. A **related** section linking to adjacent folders.
+
 ## Procedure
 
 1. List the repo's current docs-related folders and files.
 2. Read the nearest routing or README pages before restructuring.
 3. Decide: adopt the preferred structure directly, or minimally normalize an existing equivalent that's already coherent.
 4. Infer relevant subject areas from the actual repo — workloads, domains, existing docs, existing open items. Do not invent subjects from a fixed list.
-5. Create only the relevant `docs/90-open-items/<subject>/` folders, with the minimal starter files (`README.md`, `known-gaps.md`, `verification-backlog.md`, `decision-log.md`) when useful.
-6. If `ai/chat-notes/` is missing or mixed across unrelated topics, create or split it into topic-relevant files.
-7. Move flat or mixed open-items content into subject folders.
-8. Keep stable facts in `docs/`; move unresolved or verification-only material into `docs/90-open-items/`.
-9. Normalize READMEs per the README convention: relocate detail (setup, commands, troubleshooting) and any root-level `README-*.md` into `docs/`, leaving the root README and any subdirectory READMEs as thin pointers that link into `docs/`. Verify a README's claims against repo reality before relocating — a stale README is rewritten from current state, not moved verbatim.
-10. Preserve existing content where possible — do not delete and rewrite when reorganization will do.
-11. Verify the resulting layout is coherent and routing pages still make sense.
+5. Create numbered topic folders (`00-start-here/`, `01-reference/`, `10-<subject>/`, `20-<subject>/`, etc.) with gap numbering. Stable topics start at `10-`.
+6. Create `00-start-here/README.md` with a routing guide, "For AI Assistants" section, and `repo-map.md`.
+7. Create `01-reference/README.md` with a fast lookup keys table. Add `resource-ids.md` (graduated from open items if applicable) and `commands-reference.md`.
+8. Add README.md with navigation table + scope rule to every folder.
+9. Create `90-open-items/<subject>/` folders with domain-numbered individual item files. Each file includes inline verification commands. No separate `known-gaps.md` or `verification-backlog.md`. Include a `decision-log.md` for cross-cutting decisions.
+10. If `ai/chat-notes/` is missing or mixed across unrelated topics, create or split it into topic-relevant files.
+11. Move flat or mixed open-items content into subject folders with domain numbering.
+12. Keep stable facts in `docs/`; move unresolved or verification-only material into `docs/90-open-items/`.
+13. Normalize READMEs per the README convention: relocate detail (setup, commands, troubleshooting) and any root-level `README-*.md` into `docs/`, leaving the root README and any subdirectory READMEs as thin pointers that link into `docs/`. Verify a README's claims against repo reality before relocating — a stale README is rewritten from current state, not moved verbatim.
+14. Preserve existing content where possible — do not delete and rewrite when reorganization will do.
+15. Verify the resulting layout is coherent and routing pages still make sense.
 
 ## Decision Rules
 
@@ -74,11 +90,14 @@ descriptively-named concern-files over monolithic topic files.
 
 Complete when:
 
-- stable documentation lives under `docs/`, organized as `docs/<subject>/<concern>.md`
+- stable documentation lives under numbered `docs/<nn>-<subject>/` folders
   — one concern per file, self-contained, named after the question it answers;
   a subject that spans multiple concerns is a directory of files, not one page
-- each subject directory has an index (`README.md`) mapping concern → file
-- unresolved items are grouped under `docs/90-open-items/` by subject
+- `00-start-here/` exists with routing guide and repo map
+- `01-reference/` exists with fast-lookup tables (IDs, commands)
+- each directory has a README.md with navigation table, scope rule, and related links
+- unresolved items are grouped under `docs/90-open-items/<subject>/` with
+  domain-based reference numbers and inline verification commands
 - working notes live under `ai/chat-notes/` in topic-specific files
 - any new subject area has the minimal starter files needed to be usable
 - the resulting structure is easy to navigate and consistent with existing repo conventions

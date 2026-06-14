@@ -28,7 +28,9 @@ The canonical structure, graduation criteria, drift rule, and anti-patterns are 
 
 Default routing:
 
-- Unresolved facts, verification gaps, open decisions → repo's `docs/90-open-items/<subject>/`
+- Onboarding and orientation → repo's `docs/00-start-here/`
+- Exact literals (IDs, IPs, commands) for fast lookup → repo's `docs/01-reference/`
+- Unresolved facts, verification gaps, open decisions → repo's `docs/90-open-items/<subject>/` as individual domain-numbered files with inline verification commands
 - Noticed-and-accepted tech debt (with rationale and a re-evaluation trigger) → repo's `docs/91-tech-debt/<subject>/`
 - Session-derived working notes, supporting findings → repo's `ai/chat-notes/<topic>.md`
 - Stable, verified facts ready to publish → delegate to the `docs-writer` subagent
@@ -39,7 +41,7 @@ If the repo lacks this layout, follow its existing pattern. The `/repo-docs-stru
 
 ## Drift Detection
 
-When docs claim X and current repo state shows Y, do NOT silently rewrite the stable doc. Apply the drift rule from the shared file: log a verification-backlog entry and surface it in the session summary. The user resolves.
+When docs claim X and current repo state shows Y, do NOT silently rewrite the stable doc. Apply the drift rule from the shared file: log a new open-item file with inline verification commands and surface it in the session summary. The user resolves.
 
 ## Graduation
 

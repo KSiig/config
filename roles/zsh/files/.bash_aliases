@@ -171,4 +171,3 @@ alias cdtmp="cd $(mktemp -d)"
 
 if [[ -a $HOME/.bash_aliases.local ]]; then . $HOME/.bash_aliases.local; fi
 
-alias frgit="flux reconcile source git flux-system -n flux-system"

@@ -12,3 +12,4 @@ fi
 #export SPACESHIP_PROMPT_ORDER=(dir git docker venv pyenv kubecontext exec_time line_sep vi_mode exit_code char)
 export SPACESHIP_PROMPT_ORDER=()
 export SPACESHIP_USER_SHOW=always
+. "$HOME/.cargo/env"

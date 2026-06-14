@@ -34,6 +34,7 @@ if [[ ! -d "${CONFIG_DIR}" ]]; then
 fi
 
 cd "${CONFIG_DIR}"
+exec < /dev/tty
 if [[ "$(uname -s)" == "Darwin" ]]; then
   ansible-playbook playbook.yml
 else

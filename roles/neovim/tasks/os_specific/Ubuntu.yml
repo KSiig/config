@@ -16,6 +16,7 @@
     repo: "{{ neovim_ppa }}"
     update_cache: true
   become: true
+  when: ansible_distribution_version is version("26.04", "<")
 
 - name: Install Neovim
   apt:

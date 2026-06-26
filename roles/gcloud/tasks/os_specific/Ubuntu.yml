@@ -11,12 +11,20 @@
   become: true
   with_items: "{{ gcloud_dependencies }}"
 
-- name: Import Google Cloud Key
+- name: Import Google Cloud Key (legacy)
   ansible.builtin.apt_key:
     url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
     keyring: /usr/share/keyrings/cloud.google.gpg
     state: present
   become: true
+  when: ansible_distribution_version is version("26.04", "<")
+
+- name: Import Google Cloud Key (modern)
+  ansible.builtin.shell:
+    cmd: curl -fsSL https://packages.cloud.google.com/apt/doc/apt-key.gpg | gpg --batch --dearmor -o /usr/share/keyrings/cloud.google.gpg
+    creates: /usr/share/keyrings/cloud.google.gpg
+  become: true
+  when: ansible_distribution_version is version("26.04", ">=")
 
 - name: Add GCloud distribution source
   ansible.builtin.apt_repository:

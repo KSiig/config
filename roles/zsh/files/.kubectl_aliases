@@ -1232,3 +1232,4 @@ if [[ -a $HOME/.kubectl_aliases.local ]]; then . $HOME/.kubectl_aliases.local; f
 alias frgit="flux reconcile source git flux-system -n flux-system"
 alias fr="flux reconcile kustomization --with-source"
 alias frh="flux reconcile helmrelease --with-source -n"
+alias kgs="kubectl get kustomization -A -o custom-columns='NAMESPACE:.metadata.namespace,NAME:.metadata.name,AGE:.metadata.creationTimestamp,READY:.status.conditions[?(@.type==\"Ready\")].status,SUSPENDED:.spec.suspend,STATU S:.status.conditions[?(@.type==\"Ready\")].message'"

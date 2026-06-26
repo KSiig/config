@@ -139,7 +139,6 @@ fi
 
 # CloudSim
 alias flux_rec="flux reconcile source git flux-system -n flux-system && flux reconcile kustomization loki -n flux-system"
-alias kx="k config current-context"
 alias k3s_proxy="az connectedk8s proxy -n k3s -g cloudsim-aks"
 
 # kubectl-watch the same resource as a previous `kubectl get`. Pass the last
@@ -171,3 +170,8 @@ alias cdtmp="cd $(mktemp -d)"
 
 if [[ -a $HOME/.bash_aliases.local ]]; then . $HOME/.bash_aliases.local; fi
 
+alias kx="kubectx"
+alias kxls="kubectx | cat"
+alias kns="kubens"
+
+alias pwdcp="pwd | tr '\n' ' ' | pbcopy"

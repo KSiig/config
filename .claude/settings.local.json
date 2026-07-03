@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(sw_vers)",
+      "mcp__ide__getDiagnostics",
+      "Bash(git -C /Users/kaspersiig/config log --oneline -10)",
+      "Bash(git -C /Users/kaspersiig/config status)",
+      "Bash(git -C /Users/kaspersiig/config ls-files roles/vscode/)",
+      "Bash(git -C /Users/kaspersiig/config diff --stat)",
+      "Bash(tmux show *)",
+      "Read(//Users/kaspersiig/.config/karabiner/**)"
+    ]
+  }
+}

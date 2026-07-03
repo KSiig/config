@@ -174,4 +174,11 @@ alias kx="kubectx"
 alias kxls="kubectx | cat"
 alias kns="kubens"
 
-alias pwdcp="pwd | tr '\n' ' ' | pbcopy"
+alias pwdcp="pwd | tr -d '\n' | clipcopy"
+alias nlshw=$'sed \'s/\\\\n/\\n/g\''
+
+cpreal() {
+    realpath "$@" | clipcopy
+}
+
+export PATH="$HOME/.npm-global/bin:$PATH"

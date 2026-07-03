@@ -344,6 +344,9 @@ unbind C-b
 set -g prefix C-a
 bind C-a send-prefix
 
+set -s escape-time 0
+set -s set-clipboard on
+
 # move status line to top
 #set -g status-position top
 

@@ -178,7 +178,14 @@ alias pwdcp="pwd | tr -d '\n' | clipcopy"
 alias nlshw=$'sed \'s/\\\\n/\\n/g\''
 
 cpreal() {
-    realpath "$@" | clipcopy
+    realpath "$@" | tr -d '\n' | clipcopy
+}
+
+cpwb() {
+    local newest
+    newest=$(ls -t ~/workbox-files/ | head -1)
+    [[ -z "$newest" ]] && echo "No files in ~/workbox-files" && return 1
+    cpreal ~/workbox-files/"$newest"
 }
 
 export PATH="$HOME/.npm-global/bin:$PATH"

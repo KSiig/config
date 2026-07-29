@@ -421,3 +421,54 @@ tmux_conf_update_plugins_on_reload=true
 #
 # "$@"
 # # /!\ do not remove the previous line
+
+# Forward OSC 52 (and other passthrough sequences) from apps inside tmux to the host terminal.
+# Required for remote->local clipboard to work over mosh. Off by default on Ubuntu tmux builds.
+set -g allow-passthrough on
+
+# -- remote -> local clipboard over mosh ---------------------------------------
+#
+# Verified 2026-07-29 on this workbox (Ubuntu tmux 3.6 + mosh 1.4.0 -> Ghostty):
+#
+#   - tmux's OWN OSC 52 emitter does not reach the Mac clipboard. `load-buffer -w`
+#     exits 0 and silently does nothing, so `set-clipboard on` alone is not enough.
+#     Likely because `-w` needs to resolve a target client from the caller's
+#     environment, and a process inside a pane is not a client.
+#   - APPLICATION-emitted OSC 52 written to a real tty does pass through fine.
+#   - ...but only from the window the client is currently displaying; OSC 52 sent
+#     to a hidden window's tty is dropped.
+#   - gpakosz's default `prefix + y` pipes to xclip, which on this headless box
+#     targets a nonexistent X display and always fails.
+#
+# ~/.local/bin/clip writes OSC 52 itself, addressed to the attached client's tty.
+# That bypasses both tmux's broken emitter and the visible-window restriction.
+
+# prefix + y : push the current tmux paste buffer to the Mac clipboard. Intended
+# as the bridge for apps that copy into tmux's buffer rather than the clipboard -
+# e.g. claude-code, which reports "copied N chars to tmux buffer".
+#
+# KNOWN NOT WORKING: the same pipeline succeeds (rc=0) under `tmux run-shell`, but
+# nothing arrives when triggered by an actual keypress. Left in place, un-diagnosed
+# and deliberately so - copy mode below is the path in daily use. Replaces the
+# gpakosz default, which piped to xclip and could never have worked here anyway.
+bind y run-shell -b '"$TMUX_PROGRAM" ${TMUX_SOCKET:+-S "$TMUX_SOCKET"} save-buffer - | ~/.local/bin/clip'
+
+# copy mode: yanking a selection also copies it to the Mac clipboard
+bind -T copy-mode-vi y                 send -X copy-pipe-and-cancel '~/.local/bin/clip'
+bind -T copy-mode-vi Enter             send -X copy-pipe-and-cancel '~/.local/bin/clip'
+bind -T copy-mode-vi MouseDragEnd1Pane send -X copy-pipe-and-cancel '~/.local/bin/clip'
+bind -T copy-mode    M-w               send -X copy-pipe-and-cancel '~/.local/bin/clip'
+bind -T copy-mode    Enter             send -X copy-pipe-and-cancel '~/.local/bin/clip'
+bind -T copy-mode    MouseDragEnd1Pane send -X copy-pipe-and-cancel '~/.local/bin/clip'
+
+# double-click a word / triple-click a line: same, also copy to the Mac clipboard.
+# These mirror gpakosz's own bindings; only the copy-pipe target is added. Panes
+# with mouse reporting on (claude-code, pi) still get the click - the if-shell
+# guard forwards it to the application instead.
+bind -T root DoubleClick1Pane select-pane -t = \; if-shell -F "#{||:#{pane_in_mode},#{mouse_any_flag}}" { send-keys -M } { copy-mode -H ; send-keys -X select-word ; run-shell -d 0.3 ; send-keys -X copy-pipe-and-cancel '~/.local/bin/clip' }
+bind -T root TripleClick1Pane select-pane -t = \; if-shell -F "#{||:#{pane_in_mode},#{mouse_any_flag}}" { send-keys -M } { copy-mode -H ; send-keys -X select-line ; run-shell -d 0.3 ; send-keys -X copy-pipe-and-cancel '~/.local/bin/clip' }
+
+bind -T copy-mode    DoubleClick1Pane select-pane \; send-keys -X select-word \; run-shell -d 0.3 \; send-keys -X copy-pipe-and-cancel '~/.local/bin/clip'
+bind -T copy-mode    TripleClick1Pane select-pane \; send-keys -X select-line \; run-shell -d 0.3 \; send-keys -X copy-pipe-and-cancel '~/.local/bin/clip'
+bind -T copy-mode-vi DoubleClick1Pane select-pane \; send-keys -X select-word \; run-shell -d 0.3 \; send-keys -X copy-pipe-and-cancel '~/.local/bin/clip'
+bind -T copy-mode-vi TripleClick1Pane select-pane \; send-keys -X select-line \; run-shell -d 0.3 \; send-keys -X copy-pipe-and-cancel '~/.local/bin/clip'

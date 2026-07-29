@@ -41,3 +41,16 @@
     dest: "{{ tmux_conf_dest }}.local"
     state: link
     force: true
+
+- name: Ensure local bin directory exists
+  file:
+    path: "{{ clip_dest | dirname }}"
+    state: directory
+    mode: "0755"
+
+- name: Create symlink to clip
+  file:
+    src: "{{ clip_src }}"
+    dest: "{{ clip_dest }}"
+    state: link
+    force: true

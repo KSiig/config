@@ -2,7 +2,6 @@ set nocompatible
 " Plugin Configuration
 call plug#begin('~/.local/share/nvim/plugged')
 
-Plug 'fatih/vim-go'
 Plug 'ternjs/tern_for_vim'
 
 " Advanced File Explorer
@@ -132,3 +131,8 @@ let g:ale_fixers = {
 \       'autopep8'
 \   ]
 \}
+
+" ALE will otherwise lint every buffer on :w via gopls (default
+" g:ale_lint_on_save = v:true), which is the remaining source of
+" "stuff happens when I save" for Go files now that vim-go is gone.
+let g:ale_lint_on_save = 0

@@ -61,3 +61,15 @@ export LESS='-g -i -M -R -S -w -z-4'
 if (( $#commands[(i)lesspipe(|.sh)] )); then
   export LESSOPEN="| /usr/bin/env $commands[(i)lesspipe(|.sh)] %s 2>&-"
 fi
+
+##
+# Your previous /Users/kaspersiig/.zprofile file was backed up as /Users/kaspersiig/.zprofile.macports-saved_2026-06-30_at_07:48:06
+##
+
+# MacPorts Installer addition on 2026-06-30_at_07:48:06: adding an appropriate PATH variable for use with MacPorts.
+export PATH="/opt/local/bin:/opt/local/sbin:$PATH"
+# Finished adapting your PATH environment variable for use with MacPorts.
+
+
+# Added by swiftly
+. "/Users/kaspersiig/.swiftly/env.sh"

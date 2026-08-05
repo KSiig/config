@@ -174,11 +174,16 @@ alias kx="kubectx"
 alias kxls="kubectx | cat"
 alias kns="kubens"
 
-alias pwdcp="pwd | tr -d '\n' | clipcopy"
+pwdcp() {
+    local p="$PWD"
+    printf '%s' "${p/#$HOME/~}" | clipcopy
+}
 alias nlshw=$'sed \'s/\\\\n/\\n/g\''
 
 cpreal() {
-    realpath "$@" | tr -d '\n' | clipcopy
+    local p
+    p=$(realpath "$@")
+    printf '%s' "${p/#$HOME/~}" | clipcopy
 }
 
 cpwb() {

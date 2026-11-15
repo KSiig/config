@@ -453,6 +453,11 @@ set -g allow-passthrough on
 # gpakosz default, which piped to xclip and could never have worked here anyway.
 bind y run-shell -b '"$TMUX_PROGRAM" ${TMUX_SOCKET:+-S "$TMUX_SOCKET"} save-buffer - | ~/.local/bin/clip'
 
+# prefix + P : grab the most recent plannotator "Last-message annotation opened"
+# URL from the pane and copy http://wb:<port> to the clipboard. Background so
+# the pane stays responsive while the shell pipeline runs.
+bind-key P run-shell -b "tmux capture-pane -p | grep -oE 'Last-message annotation opened.*http://localhost:[0-9]+' | tail -1 | grep -oE 'http://localhost:[0-9]+' | sed 's/localhost/wb/' | clip"
+
 # copy mode: yanking a selection also copies it to the Mac clipboard
 bind -T copy-mode-vi y                 send -X copy-pipe-and-cancel '~/.local/bin/clip'
 bind -T copy-mode-vi Enter             send -X copy-pipe-and-cancel '~/.local/bin/clip'

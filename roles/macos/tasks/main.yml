@@ -1,0 +1,33 @@
+---
+- name: Tap third-party Homebrew repositories
+  ansible.builtin.command:
+    cmd: brew tap {{ item }}
+  loop: "{{ macos_taps }}"
+  changed_when: false
+  when: ansible_os_family == "Darwin"
+
+- name: Trust third-party Homebrew taps
+  ansible.builtin.command:
+    cmd: brew trust --tap {{ item }}
+  loop: "{{ macos_taps }}"
+  changed_when: false
+  when: ansible_os_family == "Darwin"
+
+- name: Install Homebrew bundle
+  ansible.builtin.command:
+    cmd: brew bundle --file {{ role_path }}/files/Brewfile
+  environment:
+    HOMEBREW_ACCEPT_EULA: "Y"
+    HOMEBREW_NO_AUTO_UPDATE: "1"
+    HOMEBREW_NO_ENV_HINTS: "1"
+  when: ansible_os_family == "Darwin"
+
+- name: Install tools that are not in Homebrew
+  ansible.builtin.command:
+    cmd: bash {{ role_path }}/files/install-extras.sh
+  when: ansible_os_family == "Darwin"
+
+- name: Link restored config into the home directory
+  ansible.builtin.command:
+    cmd: bash {{ role_path }}/files/link-config.sh
+  when: ansible_os_family == "Darwin"

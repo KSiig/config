@@ -1,0 +1,22 @@
+This repo is public, so a few things are not in git. Put them back before you rely on the machine:
+
+- ~/.creds
+- ~/.ssh/ (private keys and config for openclaw, pi, and workbox)
+- gh auth login   (~/.config/gh/hosts.yml is not in git)
+- ~/.kube/config
+- claude login     (~/.claude/.credentials.json is not in git)
+- grok login       (~/.grok/auth.json and mcp_credentials.json are not in git)
+- In ~/.creds, export TAILNET_MAGICDNS_SUFFIX and TAILSCALE_WORKBOX_IPV4
+- LINEAR_API_KEY in ~/Library/LaunchAgents/com.claude-tmux.daemon.plist
+  (the plist is installed without it)
+
+Not installed from Homebrew, do these by hand:
+
+- Xcode, from the App Store (xcodes and mas are installed)
+- Amphetamine, from the App Store
+- PDFgear, from the vendor
+- Google Docs, Sheets, and Slides (no cask; Google Drive is intentionally skipped)
+- MacPorts. ~/.zprofile still adds /opt/local/bin. The copy on the old Mac did not list its ports.
+- AeroSpace is the stable cask. The old aerospace-dev cask pointed at a local build zip and cannot be reinstalled from here.
+
+Sign in again to 1Password, Docker, gcloud, az, and the browser.

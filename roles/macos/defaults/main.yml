@@ -1,0 +1,15 @@
+---
+macos_taps:
+  - 1broseidon/tap
+  - azure/kubelogin
+  - can1357/tap
+  - felixkratz/formulae
+  - flplima/tap
+  - fluxcd/tap
+  - hashicorp/tap
+  - microsoft/mssql-release
+  - mutagen-io/mutagen
+  - nikitabobko/tap
+  - ruya-ai/cozempic
+  - sympozium-ai/sympozium
+  - tilt-dev/tap

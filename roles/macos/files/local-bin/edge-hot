@@ -1,0 +1,29 @@
+#!/bin/bash
+# edge-hot: list Microsoft Edge renderer processes sorted by CPU usage
+# Shows PID, CPU%, RSS, tab-vs-extension type, renderer-client-id, and URL hints via active TCP connections
+
+printf "%-8s %6s %7s %-5s %-3s %s\n" "PID" "CPU%" "RSS_MB" "CID" "TYP" "CONNECTED_HOSTS"
+echo "------------------------------------------------------------------------------------"
+
+ps -ax -o pid,command | awk '/Edge Helper \(Renderer\)/ && !/awk/ {print $1}' | while read pid; do
+  cpu=$(ps -o %cpu= -p "$pid" 2>/dev/null | tr -d ' ')
+  rss=$(ps -o rss= -p "$pid" 2>/dev/null | tr -d ' ')
+  cid=$(ps -o command= -p "$pid" 2>/dev/null | grep -oE 'renderer-client-id=[0-9]+' | cut -d= -f2)
+  if ps -o command= -p "$pid" 2>/dev/null | grep -q "renderer-sub-type=extension"; then
+    typ="EXT"
+  else
+    typ="TAB"
+  fi
+  hosts=$(lsof -p "$pid" 2>/dev/null | awk '/TCP/ && $NF ~ /->/ {print $NF}' | sort -u | head -3 | tr '\n' '|')
+  printf "%-8s %6s %7s %-5s %-3s %s\n" "$pid" "$cpu" "$((rss/1024))" "$cid" "$typ" "$hosts"
+done | sort -k2 -rn
+
+echo ""
+echo "GPU process:"
+gpu=$(pgrep -fl "Edge Helper.*--type=gpu-process" | awk '{print $1}' | head -1)
+ps -p "$gpu" -o pid,%cpu,rss,etime 2>/dev/null
+
+echo ""
+echo "Main process:"
+main=$(pgrep -f "/Applications/Microsoft Edge.app/Contents/MacOS/Microsoft Edge" | grep -v Helper | head -1)
+ps -p "$main" -o pid,%cpu,rss,etime 2>/dev/null

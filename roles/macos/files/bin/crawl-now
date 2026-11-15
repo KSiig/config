@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+# crawl-now — dirty one-shot helper for driving crwl against a visible Edge window.
+# For use during sessions where the user wants to see what the agent is crawling.
+#
+# Usage:
+#   crawl-now <url> [extra crwl args...]
+#
+# What it does:
+#   1. Ensures Edge is running headed with CDP (~/bin/crawl4ai-edge-up headed)
+#   2. Discovers the CDP WebSocket URL from /json/version
+#   3. Spawns crwl with -b cdp_url=<ws> and the user's URL + extra args
+#
+# For the current laptop-side session: the user can simply run this and
+# watch the Edge window navigate. Useful for debugging bot-detection, JS
+# rendering, or auth flows.
+#
+# NOT a substitute for the use_browser extension path — that's the proper
+# way to drive Edge from the workbox over the SSH tunnel.
+
+set -euo pipefail
+
+URL="${1:?usage: crawl-now <url> [extra crwl args...]}"
+shift
+
+DEBUG_PORT="${CRAWL4AI_DEBUG_PORT:-9222}"
+
+~/bin/crawl4ai-edge-up headed >/dev/null
+
+WS_URL=$(curl -sS "http://127.0.0.1:$DEBUG_PORT/json/version" | \
+  python3 -c "import json,sys; print(json.load(sys.stdin)['webSocketDebuggerUrl'])")
+
+exec crwl "$URL" -o markdown -b "cdp_url=$WS_URL" "$@"

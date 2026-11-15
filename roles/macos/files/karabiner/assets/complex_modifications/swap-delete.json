@@ -1,0 +1,42 @@
+{
+  "title": "Swap Cmd+Delete and Option+Delete",
+  "rules": [
+    {
+      "description": "Swap Cmd+Delete (delete to start of line) and Option+Delete (delete word)",
+      "manipulators": [
+        {
+          "type": "basic",
+          "from": {
+            "key_code": "delete_or_backspace",
+            "modifiers": {
+              "mandatory": ["command"],
+              "optional": ["caps_lock", "shift"]
+            }
+          },
+          "to": [
+            {
+              "key_code": "delete_or_backspace",
+              "modifiers": ["option"]
+            }
+          ]
+        },
+        {
+          "type": "basic",
+          "from": {
+            "key_code": "delete_or_backspace",
+            "modifiers": {
+              "mandatory": ["option"],
+              "optional": ["caps_lock", "shift"]
+            }
+          },
+          "to": [
+            {
+              "key_code": "delete_or_backspace",
+              "modifiers": ["command"]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

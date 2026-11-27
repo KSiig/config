@@ -8,4 +8,4 @@ nodejs_dependencies:
   - g++
   - make
 
-node_version_major: 16
+node_version_major: 22

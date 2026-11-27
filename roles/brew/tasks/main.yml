@@ -18,7 +18,8 @@
   register: brew_check
   changed_when: false
   failed_when: false
+  when: not use_macports
 
 - name: Install brew
   ansible.builtin.shell: /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-  when: brew_check.rc != 0
+  when: not use_macports and brew_check.rc != 0

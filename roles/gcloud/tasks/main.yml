@@ -1,4 +1,0 @@
----
-- name: Install Google Cloud SDK (per-OS)
-  include_tasks: "os_specific/{{ ansible_distribution }}.yml"
-  when: ansible_distribution in ['Ubuntu', 'Debian', 'MacOSX']

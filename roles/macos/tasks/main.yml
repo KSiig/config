@@ -4,14 +4,14 @@
     cmd: brew tap {{ item }}
   loop: "{{ macos_taps }}"
   changed_when: false
-  when: ansible_os_family == "Darwin"
+  when: ansible_os_family == "Darwin" and not use_macports
 
 - name: Trust third-party Homebrew taps
   ansible.builtin.command:
     cmd: brew trust --tap {{ item }}
   loop: "{{ macos_taps }}"
   changed_when: false
-  when: ansible_os_family == "Darwin"
+  when: ansible_os_family == "Darwin" and not use_macports
 
 - name: Install Homebrew bundle
   ansible.builtin.command:
@@ -20,9 +20,16 @@
     HOMEBREW_ACCEPT_EULA: "Y"
     HOMEBREW_NO_AUTO_UPDATE: "1"
     HOMEBREW_NO_ENV_HINTS: "1"
-  when: ansible_os_family == "Darwin"
+  when: ansible_os_family == "Darwin" and not use_macports
 
-- name: Install tools that are not in Homebrew
+- name: Install MacPorts ports
+  community.general.macports:
+    name: "{{ lookup('file', role_path + '/files/Portfile.txt').splitlines() | reject('match', '^(#|\\s*$)') | list }}"
+    state: present
+  become: true
+  when: use_macports
+
+- name: Install tools that are not in Homebrew or MacPorts
   ansible.builtin.command:
     cmd: bash {{ role_path }}/files/install-extras.sh
   when: ansible_os_family == "Darwin"

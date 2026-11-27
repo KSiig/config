@@ -1,4 +1,8 @@
+
 - hosts: local
+  vars:
+    # Intel Macs use MacPorts: Homebrew no longer supports them.
+    use_macports: "{{ ansible_os_family == 'Darwin' and ansible_architecture == 'x86_64' }}"
   roles:
     - basic
     - neovim
@@ -6,7 +10,6 @@
     - zsh
     - nodejs
     - brew
-    - gcloud
     - claude
     - vscode
     - macos

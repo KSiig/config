@@ -1,0 +1,26 @@
+# MacPorts ports for Intel Macs, where Homebrew is no longer supported.
+# The Apple silicon equivalent is Brewfile. One port per line.
+# Ansible comes from pipx (install.sh), pyenv and cymbal from install-extras.sh.
+# Apps (1Password, AeroSpace, Ghostty, ...) are downloads: see MANUAL.txt.
+bat
+bun
+curl
+flux
+fzf
+gh
+git
+git-lfs
+helm-3.18
+htop
+jq
+kubectx
+neovim
+nodejs24
+pipx
+rustup
+terraform-1.12
+tmux
+tree
+unzip
+uv
+wget

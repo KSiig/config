@@ -29,7 +29,7 @@ ansible-playbook playbook.yml
 
 `ansible-playbook` will ask for a password for some casks. `openai-whisper` pulls PyTorch, so the Homebrew step takes a while. At the end the play prints `roles/macos/files/MANUAL.txt`.
 
-The role installs the Homebrew bundle, CLIs that are not in Homebrew (npm globals, pipx, uv, rustup, Grok, Plannotator, cc-clip, Swiftly, claude-tmux), dotfiles, agent skills, VS Code extensions, and LaunchAgents.
+The role installs the Homebrew bundle, CLIs that are not in Homebrew (npm globals, pipx, uv, rustup, Plannotator, cc-clip, Swiftly), dotfiles, agent skills, VS Code extensions, and LaunchAgents.
 
 Left out on purpose: WiFiMan, BlueStacks, Autodesk Fusion, Parsec, Raspberry Pi Imager, Google Drive, MiniMax Code, WireGuard.
 
@@ -42,7 +42,6 @@ This repo is public. These are not in git. Put them back before relying on the m
 - Claude login (`~/.claude/.credentials.json` is not in git)
 - Grok login (`~/.grok/auth.json` and `mcp_credentials.json` are not in git)
 - In `~/.creds`, export `TAILNET_MAGICDNS_SUFFIX` and `TAILSCALE_WORKBOX_IPV4`. The values were removed from `~/.zcustom` and are not stored here. Copy them off the old Mac before wiping.
-- `LINEAR_API_KEY` in `~/Library/LaunchAgents/com.claude-tmux.daemon.plist`. The plist is installed without it. The old key lived in that plist in plaintext, so rotate it and put the new value in the plist.
 
 Not installed from Homebrew:
 
@@ -50,10 +49,21 @@ Not installed from Homebrew:
 - Amphetamine, from the App Store
 - PDFgear, from the vendor
 - Google Docs, Sheets, and Slides (no cask)
-- MacPorts. `~/.zprofile` still adds `/opt/local/bin`. The old install could not list its ports.
 - AeroSpace comes back as the stable cask. The old `aerospace-dev` cask pointed at a local build zip.
 
-Sign in again to 1Password, Docker, gcloud, az, and the browser.
+Sign in again to 1Password, Docker, az, and the browser.
+
+## Intel Macs
+
+Homebrew no longer supports Intel Macs, so on `x86_64` the play uses MacPorts instead. Install MacPorts first. `install.sh` then installs Ansible with pipx, and the `macos` role installs the ports in `roles/macos/files/Portfile.txt`. Apps have no ports: `MANUAL.txt` lists the downloads.
+
+## Private overlay
+
+A few files cannot live in a public repo: work-specific rules and aliases, brand files for the `visual-aid` skill, the voice sample for the speech hook, and extra Claude Code settings. They live in a private repo cloned to `~/config-private`. `link-config.sh` links them when that folder exists and skips them when it does not, so this repo works on its own.
+
+## Agent skills
+
+`~/.agents/skills` is a normal folder. `link-config.sh` links each skill from `roles/macos/files/agents-skills` into it, so skills installed by other tools stay out of git. `~/.claude/skills` points at the same folder.
 
 # Installation
 

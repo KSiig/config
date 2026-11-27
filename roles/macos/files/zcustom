@@ -5,27 +5,24 @@ fi
 alias oc_gw="ssh -N -L 127.0.0.1:18789:127.0.0.1:18789 openclaw"
 wzone() { eval "$(fc -ln -1) -L topology.kubernetes.io/zone" }
 
-export PATH="$HOME/Code/claude-tmux/target/release:$HOME/.cargo/bin:$PATH"
+# Homebrew rustup is keg-only, so its cargo/rustc proxies are not in /opt/homebrew/bin
+export PATH="/opt/homebrew/opt/rustup/bin:$HOME/.cargo/bin:$PATH"
 export PATH="$PATH:$HOME/.dotnet/tools"
 
+# pyenv from its git installer (Intel Macs on MacPorts) lives in ~/.pyenv
+[[ -d $HOME/.pyenv/bin ]] && export PATH="$HOME/.pyenv/bin:$PATH"
 if command -v pyenv &>/dev/null; then
   eval "$(pyenv init -)"
   if command -v pyenv-virtualenv-init &>/dev/null; then eval "$(pyenv virtualenv-init -)"; fi
 fi
 
-alias sympozium="sympozium -n sympozium-system"
-alias sz="sympozium"
 alias cdc="cd ~/Code"
-alias cdcc="cd ~/Code/velatir-coordination"
 alias cdcw="cd ~/Code/workspaces"
-alias cdci="cd ~/Code/velatir-infrastructure"
-alias cdcsd="cd ~/Code/velatir-service-discovery"
 alias tilt_port="ssh -R 7065:localhost:7065 workbox"
 
 [[ "$(uname)" == "Linux" ]] && eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv zsh)"
 
-source ~/.creds
-alias mw="mosh workbox"
+[[ -f ~/.creds ]] && source ~/.creds
 alias opencode="ANTHROPIC_BASE_URL=http://127.0.0.1:8765/v1 opencode"
 alias mq="mmx quota"
 
@@ -80,7 +77,6 @@ plannotators() {
 }
 alias plans="plannotator sessions"
 
-alias budget-sync="~/budget-sync-venv/bin/python3 ~/sara-kasper/Bolig/budget-sync/budget-sync"
 alias tmux-tunnel="journalctl --user -u tmux-mobile --no-pager | grep -oP '(Tunnel URL|Password): \K.*' | tail -2"
 tw() {
   tmux list-windows | awk '{print $1 $2;}' | sed -e 's/$/ /' | tr -d '\n'
@@ -91,3 +87,6 @@ tw() {
 # Tailscale (set these in ~/.creds, which is sourced above; not stored in this public repo):
 #   export TAILNET_MAGICDNS_SUFFIX=...
 #   export TAILSCALE_WORKBOX_IPV4=...
+
+# Machine-specific and private additions (linked from the private overlay)
+[[ -f ~/.zcustom.local ]] && source ~/.zcustom.local

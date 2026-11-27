@@ -98,7 +98,7 @@ done
 if ! kill -0 "$NEW_PID" 2>/dev/null; then
   echo "Edge process $NEW_PID died. Port $DEBUG_PORT is likely held by another process." >&2
   echo "Check: lsof -nP -iTCP:$DEBUG_PORT -sTCP:LISTEN" >&2
-  echo "Common cause: a previous Edge instance (e.g. your normal Velatir Edge launched with --remote-debugging-port=9222 in an earlier test) is still bound." >&2
+  echo "Common cause: a previous Edge instance (e.g. your normal Edge profile launched with --remote-debugging-port=9222 in an earlier test) is still bound." >&2
   exit 1
 fi
 

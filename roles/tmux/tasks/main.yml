@@ -10,12 +10,14 @@
     name: "git"
     state: present
   become: "{{ ansible_os_family != 'Darwin' }}"
+  when: not use_macports
 
 - name: Install Tmux
   package:
     name: "{{ tmux_name }}"
     state: present
   become: "{{ ansible_os_family != 'Darwin' }}"
+  when: not use_macports
 
 - name: Check if folder exists
   stat:
@@ -54,3 +56,18 @@
     dest: "{{ clip_dest }}"
     state: link
     force: true
+
+- name: Check whether agent-deck is installed
+  stat:
+    path: "{{ agent_deck_dest }}/agent-deck"
+  register: agent_deck_bin
+
+- name: Install agent-deck from its release build
+  unarchive:
+    src: "{{ agent_deck_url }}"
+    dest: "{{ agent_deck_dest }}"
+    remote_src: true
+    include:
+      - agent-deck
+    mode: "0755"
+  when: not agent_deck_bin.stat.exists

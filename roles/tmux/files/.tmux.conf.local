@@ -350,8 +350,10 @@ set -s set-clipboard on
 # move status line to top
 #set -g status-position top
 
-bind-key C display-popup -E -w 80% -h 80% "~/Code/claude-tmux/target/release/claude-tmux"
 bind-key B run-shell "~/.local/bin/claude-fork-pane"
+
+# prefix s: jump to the agent-deck session, starting it if it is not running
+bind s new-session -A -s agent-deck agent-deck
 
 if-shell '[ -f ~/.tmux.conf.local.local ]' 'source-file ~/.tmux.conf.local.local'
 

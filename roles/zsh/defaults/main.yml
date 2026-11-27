@@ -11,11 +11,10 @@ zsh_oh_my_zsh_version: master
 zsh_oh_my_zsh_dest: "{{ ansible_env.HOME }}/.oh-my-zsh"
 
 zsh_plugin_dir: "{{ ansible_env.HOME }}/.oh-my-zsh/plugins"
+# zsh-syntax-highlighting ships with oh-my-zsh itself, so it isn't cloned here
 zsh_plugins:
   - owner: djui
     repo: alias-tips
-  - owner: zsh-users
-    repo: zsh-syntax-highlighting
 
 zsh_config_src:
   - "files/.*"

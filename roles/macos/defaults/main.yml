@@ -3,7 +3,6 @@ macos_taps:
   - 1broseidon/tap
   - azure/kubelogin
   - can1357/tap
-  - felixkratz/formulae
   - flplima/tap
   - fluxcd/tap
   - hashicorp/tap

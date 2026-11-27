@@ -1,3 +1,7 @@
+# The following lines were added by Docker Desktop to add commands to your PATH.
+[ -d "$HOME/.docker/bin" ] && export PATH="$PATH:$HOME/.docker/bin"
+# End of Docker Desktop section.
+
 #
 # Executes commands at login pre-zshrc.
 #
@@ -63,7 +67,6 @@ if (( $#commands[(i)lesspipe(|.sh)] )); then
 fi
 
 ##
-# Your previous /Users/kaspersiig/.zprofile file was backed up as /Users/kaspersiig/.zprofile.macports-saved_2026-06-30_at_07:48:06
 ##
 
 # MacPorts Installer addition on 2026-06-30_at_07:48:06: adding an appropriate PATH variable for use with MacPorts.
@@ -72,4 +75,4 @@ export PATH="/opt/local/bin:/opt/local/sbin:$PATH"
 
 
 # Added by swiftly
-. "/Users/kaspersiig/.swiftly/env.sh"
+[ -f "$HOME/.swiftly/env.sh" ] && . "$HOME/.swiftly/env.sh"

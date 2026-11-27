@@ -1,3 +1,3 @@
 #!/usr/bin/env bash
-f=$(ls -t ~/workbox-files/ | head -1)
-[ -n "$f" ] && realpath ~/workbox-files/"$f" | sed "s|$HOME|~|" | tr -d '\n' | pbcopy
+f=$(ls -t ~/working-files/ | head -1)
+[ -n "$f" ] && realpath ~/working-files/"$f" | sed "s|$HOME|~|" | tr -d '\n' | pbcopy

@@ -118,14 +118,6 @@ export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
 export PATH="$PATH:$HOME/.local/bin"
 export PATH="$PATH:$HOME/.local/share/pipx/venvs/ansible/bin"
 
-# Google Cloud SDK (Homebrew cask location on macOS)
-if [ -f "$(brew --prefix 2>/dev/null)/share/google-cloud-sdk/path.zsh.inc" ]; then
-  . "$(brew --prefix)/share/google-cloud-sdk/path.zsh.inc"
-fi
-if [ -f "$(brew --prefix 2>/dev/null)/share/google-cloud-sdk/completion.zsh.inc" ]; then
-  . "$(brew --prefix)/share/google-cloud-sdk/completion.zsh.inc"
-fi
-
 # speedscale env vars
 export SPEEDSCALE_HOME=$HOME/.speedscale
 export PATH=$PATH:$SPEEDSCALE_HOME
@@ -133,7 +125,7 @@ export PATH=$PATH:$SPEEDSCALE_HOME
 
 
 # Scaleway CLI autocomplete initialization.
-eval "$(scw autocomplete script shell=zsh)"
+command -v scw &>/dev/null && eval "$(scw autocomplete script shell=zsh)"
 export PATH="/opt/homebrew/opt/util-linux/bin:$PATH"
 export PATH="/opt/homebrew/opt/util-linux/sbin:$PATH"
 

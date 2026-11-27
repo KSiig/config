@@ -90,11 +90,11 @@ open_url() {
     echo "[DRY-RUN] would offer to open the URL in a browser"
     return 0
   fi
-  if command -v xdg-open >/dev/null 2>&1; then
+  if command -v open >/dev/null 2>&1; then
     read -r -p "Open the URL in a browser now? [Y/n] " ans
     case "$ans" in
       n|N|no|No) ;;
-      *) xdg-open "$url" >/dev/null 2>&1 || warn "could not open a browser" ;;
+      *) open "$url" >/dev/null 2>&1 || warn "could not open a browser" ;;
     esac
   fi
 }

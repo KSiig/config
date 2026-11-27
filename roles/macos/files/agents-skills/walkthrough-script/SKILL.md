@@ -6,9 +6,9 @@ description: >
   decision, or an action outside the terminal (signup, API key, admin
   console). Use when the user asks for a walkthrough script, an
   interactive script for manual steps, a script they can execute that
-  takes them through an issue, or a runbook for SII-xx / VEL-xx. Also
-  used by coordinate-implementation after human-issue writeups.
-  Slash command: /walkthrough-script or /skill:walkthrough-script.
+  takes them through an issue, or a runbook for ABC-xx. Also used by
+  implement-issue after human sub-issue writeups.
+  Slash command: /walkthrough-script.
 triggers:
   - walkthrough script
   - interactive script
@@ -37,19 +37,18 @@ shape.
 
 ```
 /walkthrough-script <source>
-/skill:walkthrough-script <source>
 ```
 
 `<source>` is one of:
 
-- A Linear issue id or URL (`SII-74`, `VEL-1234`, `https://linear.app/.../issue/...`)
+- A Linear issue id or URL (`ABC-123`, `https://linear.app/.../issue/...`)
 - A path to a markdown file that already lists the steps
 - Nothing, when the steps are already in the user message
 
-If there is no source, ask. Do not invent a procedure from a milestone
+If there is no source, ask. Do not invent a procedure from a root
 summary or from chat history.
 
-A caller (for example `coordinate-implementation`) may also pass an
+A caller (for example `implement-issue`) may also pass an
 output path. That path wins.
 
 ## Your task
@@ -66,9 +65,8 @@ output path. That path wins.
 
 ## Phase 1 — Resolve the source
 
-**Linear issue.** Fetch the issue. Use `linear-velatir` when the URL or
-team is Velatir. Use `linear-personal` for every other workspace (for
-example `linear.app/siig`). Parse `## Manual steps` first. If that
+**Linear issue.** Fetch the issue with the claude.ai Linear connector.
+Parse `## Manual steps` first. If that
 heading is missing, parse `## Steps`. Keep, in order: step number,
 title, exact commands, URLs, "why a person", expected outputs, dest
 paths for secrets. Also keep required env vars and host/repo hints from
@@ -90,7 +88,7 @@ Each step is exactly one class:
 |---|---|---|
 | `command` | The step is a bash invocation the person must run (privileged CLI, personal credentials). | Run it under `--live`. No extra confirm. |
 | `command+decision` | The step is still a command, but the person must pick among options (which policy, which account, create vs skip). | List options. Prompt. Then run. |
-| `out-of-terminal` | The person leaves the terminal: signup, API key from a portal, admin console, phone, vendor site. | Print the action and URL. Optional `xdg-open`. Wait. Hidden paste if a secret is produced. Then any terminal-side verify. |
+| `out-of-terminal` | The person leaves the terminal: signup, API key from a portal, admin console, phone, vendor site. | Print the action and URL. Optional `open`. Wait. Hidden paste if a secret is produced. Then any terminal-side verify. |
 
 A procedure may mix classes. That is normal. Mixed **issues** (agent
 work plus human work in one Linear issue) are not this skill's problem.
@@ -117,17 +115,17 @@ Encode commands from the source. Do not paraphrase flags.
 1. If the caller passed a path, use it.
 2. Else if the current directory is a git repo, write
    `scripts/<id-or-slug>.sh`. `<id-or-slug>` is the Linear identifier
-   in lowercase (`sii-74`) when the source is an issue, otherwise a
+   in lowercase (`abc-123`) when the source is an issue, otherwise a
    short kebab slug from the procedure title.
 3. Else ask.
 
 Create parent directories. Do not write onto a primary checkout when
 the caller passed a worktree path.
 
-Default for `coordinate-implementation` (the caller always passes this):
+Default for `implement-issue` (the caller always passes this):
 
 ```
-~/Code/workspaces/<milestone-slug>/human/<ISSUE-ID>.sh
+~/Code/workspaces/<slug>/human/<ISSUE-ID>.sh
 ```
 
 ## Phase 4 — Write the script
@@ -241,3 +239,7 @@ Verify: bash -n OK · --dry-run OK
 - Do not paraphrase commands from the source.
 - Do not write the script onto a primary checkout when the caller
   passed a worktree path.
+- Follow the Never list in the repo's `AGENTS.md`, if it has one. A step
+  that would run `terraform apply`/`destroy` or push to `main` is not
+  encoded as a command: print it as an out-of-terminal step that goes
+  through CI, and say so in the report.

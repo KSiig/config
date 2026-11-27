@@ -55,25 +55,9 @@ if [ -n "$SEVEN_D" ]; then
   fi
 fi
 
-# --- Session counts from claude-tmux ---
-SESSIONS=""
-if [ -f /tmp/claude-tmux-status ]; then
-  . /tmp/claude-tmux-status
-  parts=()
-  [ "${working:-0}" -gt 0 ] && parts+=("${GREEN}●${working}${RESET}")
-  [ "${done:-0}" -gt 0 ] && parts+=("${CYAN}◉${done}${RESET}")
-  [ "${idle:-0}" -gt 0 ] && parts+=("${DIM}○${idle}${RESET}")
-  [ "${waiting:-0}" -gt 0 ] && parts+=("${YELLOW}◐${waiting}${RESET}")
-  [ "${unknown:-0}" -gt 0 ] && parts+=("${DIM}?${unknown}${RESET}")
-  if [ ${#parts[@]} -gt 0 ]; then
-    IFS=' '; SESSIONS="${parts[*]}"
-  fi
-fi
-
-# --- Single line: critter bar pct | model effort | rate limits | sessions ---
+# --- Single line: critter bar pct | model effort | rate limits ---
 LINE="${BAR_COLOR}${BAR}${RESET} ${PCT}% | ${MODEL}"
 [ -n "$EFFORT_STR" ] && LINE="${LINE} ${EFFORT_STR}"
 [ -n "$LIMITS" ] && LINE="${LINE} | ${LIMITS}"
-[ -n "$SESSIONS" ] && LINE="${LINE} | ${SESSIONS}"
 
 echo -e "$LINE"

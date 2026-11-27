@@ -11,7 +11,7 @@
 
 set -euo pipefail
 
-ALLOWED_DIR_PATTERN="^cd /Users/kaspersiig/Code/[^ ]+ && "
+ALLOWED_DIR_PATTERN="^cd ${HOME}/Code/[^ ]+ && "
 
 ALLOWED_PREFIXES=(
   "git "

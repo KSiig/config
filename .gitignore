@@ -31,3 +31,10 @@
 *.code-workspace
 
 # End of https://www.toptal.com/developers/gitignore/api/visualstudiocode,ansible
+### Local and machine-specific ###
+.DS_Store
+.claude/settings.local.json
+# Skills installed outside this repo land in ~/.agents/skills; these two used to live here
+roles/macos/files/agents-skills/synced/
+roles/macos/files/agents-skills/ste100-check
+__pycache__/

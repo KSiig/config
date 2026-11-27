@@ -7,8 +7,12 @@
 # real tty does. So we write the sequence ourselves.
 #
 # Target tty, in order of preference:
-#   1. the attached tmux client's tty  - bypasses tmux entirely, so it works
-#      even when the calling pane is in a window you are not looking at
+#   1. ALL attached tmux client ttys  - one Mac mosh session may correspond
+#      to one or more of these, and the user can be on any of them. Writing
+#      the same OSC 52 to all of them is safe and idempotent: OSC 52 writes
+#      to NSPasteboard globally, not per-window, so the last write wins (and
+#      it's the same value). When the user has a single mosh session, this
+#      reduces to the same behavior as targeting one tty.
 #   2. our own stdout, if it is a tty  - the no-tmux case
 #
 # Usage:
@@ -24,32 +28,48 @@ else
     payload=$(base64 | tr -d '\n')
 fi
 
-client_tty() {
-    command -v tmux >/dev/null 2>&1 || return 0
+targets=''
+
+# Inside tmux: write to every attached client tty. This is the key fix from
+# the single-tty version - when the user has multiple mosh sessions running
+# on the Mac (e.g. one for a long-running claude-code, another for ad-hoc
+# work), each session is a separate tmux client. Picking only the first one
+# meant copies happened to land only when the user happened to be on that
+# particular mosh session. Writing to all of them is safe because OSC 52 is
+# global on NSPasteboard.
+if [ -n "$TMUX" ] && command -v tmux >/dev/null 2>&1; then
     for t in $(tmux list-clients -F '#{client_tty}' 2>/dev/null); do
         if [ -w "$t" ]; then
-            printf '%s' "$t"
-            return 0
+            targets="$targets $t"
         fi
     done
-}
+fi
 
-target=''
+# Outside tmux on a bare mosh shell: stdout is the real terminal.
+if [ -z "$targets" ] && [ -t 1 ]; then
+    targets='/dev/stdout'
+fi
 
-# Inside tmux: always prefer the client tty. Our own stdout is usually a pipe
-# here (copy-pipe, run-shell), and even when it is a tty it belongs to a pane
-# that may not be the visible one - OSC 52 from a hidden window gets dropped.
-[ -n "$TMUX" ] && target=$(client_tty)
+# Last resort: copy-pipe under tmux can look like this (no TMUX, no tty).
+if [ -z "$targets" ] && command -v tmux >/dev/null 2>&1; then
+    for t in $(tmux list-clients -F '#{client_tty}' 2>/dev/null); do
+        if [ -w "$t" ]; then
+            targets="$targets $t"
+        fi
+    done
+fi
 
-# Outside tmux (e.g. a bare mosh shell): our stdout is the real terminal.
-[ -z "$target" ] && [ -t 1 ] && target='/dev/stdout'
-
-# Last resort: invoked with no TMUX and no tty (copy-pipe can look like this).
-[ -z "$target" ] && target=$(client_tty)
-
-if [ -z "$target" ]; then
+if [ -z "$targets" ]; then
     echo "clip: no tty to write OSC 52 to (no attached tmux client, stdout not a tty)" >&2
     exit 1
 fi
 
-printf '\033]52;c;%s\007' "$payload" > "$target"
+# Write to every target. Failures on one tty shouldn't abort the rest.
+rc=0
+for t in $targets; do
+    if ! printf '\033]52;c;%s\007' "$payload" > "$t" 2>/dev/null; then
+        rc=1
+    fi
+done
+exit $rc
+

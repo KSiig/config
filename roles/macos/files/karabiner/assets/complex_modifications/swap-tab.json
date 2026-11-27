@@ -1,0 +1,42 @@
+{
+  "title": "Swap Cmd+Tab and Ctrl+Tab",
+  "rules": [
+    {
+      "description": "Swap Cmd+Tab (app switcher) and Ctrl+Tab (tab switcher)",
+      "manipulators": [
+        {
+          "type": "basic",
+          "from": {
+            "key_code": "tab",
+            "modifiers": {
+              "mandatory": ["command"],
+              "optional": ["shift"]
+            }
+          },
+          "to": [
+            {
+              "key_code": "tab",
+              "modifiers": ["control"]
+            }
+          ]
+        },
+        {
+          "type": "basic",
+          "from": {
+            "key_code": "tab",
+            "modifiers": {
+              "mandatory": ["control"],
+              "optional": ["shift"]
+            }
+          },
+          "to": [
+            {
+              "key_code": "tab",
+              "modifiers": ["command"]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

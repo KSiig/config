@@ -10,3 +10,5 @@
     name: "{{ basic_packages }}"
     state: present
   become: "{{ ansible_os_family != 'Darwin' }}"
+  # On MacPorts the macos role installs these with the other ports.
+  when: not use_macports

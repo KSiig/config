@@ -188,9 +188,10 @@ cpreal() {
 
 cpwb() {
     local newest
-    newest=$(ls -t ~/workbox-files/ | head -1)
-    [[ -z "$newest" ]] && echo "No files in ~/workbox-files" && return 1
-    cpreal ~/workbox-files/"$newest"
+    newest=$(ls -t ~/working-files/ | head -1)
+    [[ -z "$newest" ]] && echo "No files in ~/working-files" && return 1
+    cpreal ~/working-files/"$newest"
 }
 
 export PATH="$HOME/.npm-global/bin:$PATH"
+alias corc='claude --model claude-fable-5-2'

@@ -1,9 +1,0 @@
----
-gcloud_dependencies:
-  - git
-  - gnupg2
-  - gpg
-  - gcc
-  - apt-transport-https
-  - ca-certificates
-  - gnupg

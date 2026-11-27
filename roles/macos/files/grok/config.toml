@@ -1,0 +1,37 @@
+disabled_mcp_servers = ["figma"]
+
+[cli]
+installer = "internal"
+
+[marketplace]
+default_skills_installs_purged = true
+official_marketplace_auto_installed = true
+
+[[marketplace.sources]]
+name = "xAI Official"
+git = "https://github.com/xai-org/plugin-marketplace.git"
+
+[ui]
+max_thoughts_width = 120
+fork_secondary_model = "grok-4.6"
+yolo = false
+compact_mode = false
+permission_mode = "always-approve"
+
+[privacy]
+privacy_banner_acked = "2026-08-26T08:06:11Z"
+
+[plugins]
+enabled = ["figma"]
+
+[mcp_servers.figwright]
+command = "npx"
+args = [
+    "-y",
+    "@figwright/mcp@0.6.0",
+]
+enabled = true
+
+[mcp_servers.Linear]
+url = "https://mcp.linear.app/mcp"
+enabled = true

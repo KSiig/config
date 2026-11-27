@@ -350,8 +350,10 @@ set -s set-clipboard on
 # move status line to top
 #set -g status-position top
 
-bind-key C display-popup -E -w 80% -h 80% "~/Code/claude-tmux/target/release/claude-tmux"
 bind-key B run-shell "~/.local/bin/claude-fork-pane"
+
+# prefix s: jump to the agent-deck session, starting it if it is not running
+bind s new-session -A -s agent-deck agent-deck
 
 if-shell '[ -f ~/.tmux.conf.local.local ]' 'source-file ~/.tmux.conf.local.local'
 
@@ -452,6 +454,11 @@ set -g allow-passthrough on
 # and deliberately so - copy mode below is the path in daily use. Replaces the
 # gpakosz default, which piped to xclip and could never have worked here anyway.
 bind y run-shell -b '"$TMUX_PROGRAM" ${TMUX_SOCKET:+-S "$TMUX_SOCKET"} save-buffer - | ~/.local/bin/clip'
+
+# prefix + P : grab the most recent plannotator "Last-message annotation opened"
+# URL from the pane and copy http://wb:<port> to the clipboard. Background so
+# the pane stays responsive while the shell pipeline runs.
+bind-key P run-shell -b "tmux capture-pane -p | grep -oE 'Last-message annotation opened.*http://localhost:[0-9]+' | tail -1 | grep -oE 'http://localhost:[0-9]+' | sed 's/localhost/wb/' | clip"
 
 # copy mode: yanking a selection also copies it to the Mac clipboard
 bind -T copy-mode-vi y                 send -X copy-pipe-and-cancel '~/.local/bin/clip'

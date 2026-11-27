@@ -1,0 +1,92 @@
+if [[ -d /opt/homebrew/opt/libpq/bin ]]; then
+  export PATH="$PATH:/opt/homebrew/opt/libpq/bin"
+fi
+
+alias oc_gw="ssh -N -L 127.0.0.1:18789:127.0.0.1:18789 openclaw"
+wzone() { eval "$(fc -ln -1) -L topology.kubernetes.io/zone" }
+
+# Homebrew rustup is keg-only, so its cargo/rustc proxies are not in /opt/homebrew/bin
+export PATH="/opt/homebrew/opt/rustup/bin:$HOME/.cargo/bin:$PATH"
+export PATH="$PATH:$HOME/.dotnet/tools"
+
+# pyenv from its git installer (Intel Macs on MacPorts) lives in ~/.pyenv
+[[ -d $HOME/.pyenv/bin ]] && export PATH="$HOME/.pyenv/bin:$PATH"
+if command -v pyenv &>/dev/null; then
+  eval "$(pyenv init -)"
+  if command -v pyenv-virtualenv-init &>/dev/null; then eval "$(pyenv virtualenv-init -)"; fi
+fi
+
+alias cdc="cd ~/Code"
+alias cdcw="cd ~/Code/workspaces"
+alias tilt_port="ssh -R 7065:localhost:7065 workbox"
+
+[[ "$(uname)" == "Linux" ]] && eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv zsh)"
+
+[[ -f ~/.creds ]] && source ~/.creds
+alias opencode="ANTHROPIC_BASE_URL=http://127.0.0.1:8765/v1 opencode"
+alias mq="mmx quota"
+
+# ── Clipboard on the headless workbox ──────────────────────────────────────
+# The box has no X server, so $DISPLAY is unset and oh-my-zsh's clipboard.zsh
+# skips its xclip/xsel branches -- leaving no branch at all outside tmux, hence
+# "Platform linux-gnu not supported". OSC 52 fixes this by handing the bytes to
+# the *local* terminal: ghostty allows clipboard writes by default, and
+# mosh 1.4.0 forwards the sequence.
+#
+# Guarded to Linux so the Mac keeps oh-my-zsh's pbcopy branch. Must stay after
+# .zshrc line 75 (`source $ZSH/oh-my-zsh.sh`) to override its lazy stubs.
+if [[ "$(uname)" == "Linux" ]]; then
+  clipcopy() {
+    # Always write the escape ourselves -- do NOT delegate to `tmux load-buffer -w`.
+    # tmux hardcodes an EMPTY selection field (it emits `\033]52;;<b64>`), and
+    # mosh 1.4.0 only relays the sequence when that field is exactly `c`, so the
+    # tmux path is silently dropped in transit. Verified end-to-end against a
+    # throwaway mosh-server: `]52;c;` arrives, `]52;;` never does. Overriding Ms
+    # to hardcode `c` does not work either -- tmux's Ms expansion silently emits
+    # nothing unless the format still consumes %p1%s.
+    #
+    # Writing to /dev/tty inside tmux is fine: tmux forwards a pane-originated
+    # OSC 52 with the `c` preserved, and still populates its own paste buffer.
+    if [[ -w /dev/tty ]]; then
+      printf '\033]52;c;%s\a' "$(base64 -w0 < "${1:-/dev/stdin}")" > /dev/tty
+    else
+      print -u2 "clipcopy: no controlling terminal to send OSC 52 to"
+      return 1
+    fi
+  }
+  clippaste() {
+    print -u2 "clippaste: unavailable on a headless box. OSC 52 reads are gated by the terminal (ghostty defaults clipboard-read to \"ask\") and mosh does not route the reply -- use the terminal's own paste."
+    return 1
+  }
+fi
+
+[[ "$OSTYPE" == linux* ]] && alias omp=omp-capped
+
+alias as-ws-map="aerospace list-windows --all --format '%{window-id} | %{app-name} | %{workspace}'"
+export PLANNOTATOR_PORT=29432-29481
+
+plannotators() {
+  local pids=( ${(f)"$(pgrep plannotator)"} )
+  if (( ${#pids} )); then
+    ps -p "${pids[@]}" -o pid=,lstart=,args=
+    print -r -- '--- listening ports ---'
+    lsof -a -p "${(j:,:)pids}" -iTCP -sTCP:LISTEN -nP 2>/dev/null
+  else
+    print -r -- '(no live plannotator processes)'
+  fi
+}
+alias plans="plannotator sessions"
+
+alias tmux-tunnel="journalctl --user -u tmux-mobile --no-pager | grep -oP '(Tunnel URL|Password): \K.*' | tail -2"
+tw() {
+  tmux list-windows | awk '{print $1 $2;}' | sed -e 's/$/ /' | tr -d '\n'
+  echo
+}
+
+# Tailscale (SII-46)
+# Tailscale (set these in ~/.creds, which is sourced above; not stored in this public repo):
+#   export TAILNET_MAGICDNS_SUFFIX=...
+#   export TAILSCALE_WORKBOX_IPV4=...
+
+# Machine-specific and private additions (linked from the private overlay)
+[[ -f ~/.zcustom.local ]] && source ~/.zcustom.local

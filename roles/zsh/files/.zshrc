@@ -118,27 +118,14 @@ export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
 export PATH="$PATH:$HOME/.local/bin"
 export PATH="$PATH:$HOME/.local/share/pipx/venvs/ansible/bin"
 
-# Google Cloud SDK (Homebrew cask location on macOS)
-if [ -f "$(brew --prefix 2>/dev/null)/share/google-cloud-sdk/path.zsh.inc" ]; then
-  . "$(brew --prefix)/share/google-cloud-sdk/path.zsh.inc"
-fi
-if [ -f "$(brew --prefix 2>/dev/null)/share/google-cloud-sdk/completion.zsh.inc" ]; then
-  . "$(brew --prefix)/share/google-cloud-sdk/completion.zsh.inc"
-fi
-
 # speedscale env vars
 export SPEEDSCALE_HOME=$HOME/.speedscale
 export PATH=$PATH:$SPEEDSCALE_HOME
 
-# claude-tmux daemon: tracks Claude Code session statuses in the background
-# so the popup (prefix+C) reflects state changes that happened while closed.
-CLAUDE_TMUX_BIN="$HOME/Code/claude-tmux/target/release/claude-tmux"
-if [[ -x "$CLAUDE_TMUX_BIN" ]]; then
-  pgrep -f "claude-tmux --headless" >/dev/null || "$CLAUDE_TMUX_BIN" --headless >/dev/null 2>&1 &!
-fi
+
 
 # Scaleway CLI autocomplete initialization.
-eval "$(scw autocomplete script shell=zsh)"
+command -v scw &>/dev/null && eval "$(scw autocomplete script shell=zsh)"
 export PATH="/opt/homebrew/opt/util-linux/bin:$PATH"
 export PATH="/opt/homebrew/opt/util-linux/sbin:$PATH"
 
@@ -148,3 +135,15 @@ export PATH="/opt/homebrew/opt/util-linux/sbin:$PATH"
 # bun
 export BUN_INSTALL="$HOME/.bun"
 export PATH="$BUN_INSTALL/bin:$PATH"
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+
+# >>> grok installer >>>
+export PATH="$HOME/.grok/bin:$PATH"
+fpath=(~/.grok/completions/zsh $fpath)
+autoload -Uz compinit && compinit -C
+# <<< grok installer <<<
+

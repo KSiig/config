@@ -12,3 +12,11 @@ tmux_conf_local_src: "{{ playbook_dir }}/roles/tmux/files/.tmux.conf.local"
 # OSC 52 clipboard helper that .tmux.conf.local's copy bindings pipe through
 clip_src: "{{ playbook_dir }}/roles/tmux/files/clip"
 clip_dest: "{{ ansible_env.HOME }}/.local/bin/clip"
+
+# agent-deck, the session manager that `prefix s` opens. Release builds exist
+# for darwin and linux on amd64 and arm64.
+agent_deck_version: "1.16.40"
+agent_deck_os: "{{ ansible_system | lower }}"
+agent_deck_arch: "{{ 'arm64' if ansible_architecture in ['arm64', 'aarch64'] else 'amd64' }}"
+agent_deck_url: "https://github.com/asheshgoplani/agent-deck/releases/download/v{{ agent_deck_version }}/agent-deck_{{ agent_deck_version }}_{{ agent_deck_os }}_{{ agent_deck_arch }}.tar.gz"
+agent_deck_dest: "{{ ansible_env.HOME }}/.local/bin"

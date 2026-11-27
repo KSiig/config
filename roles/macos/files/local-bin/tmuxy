@@ -1,0 +1,14 @@
+#!/bin/sh
+set -eu
+LAUNCHER_FILE="${XDG_CONFIG_HOME:-$HOME/.config}/tmuxy/launcher"
+if [ ! -f "$LAUNCHER_FILE" ]; then
+  echo 'tmuxy: no launcher recorded — open the app once first.' >&2
+  exit 1
+fi
+EXEC_PATH="$(cat "$LAUNCHER_FILE")"
+if [ "$#" -gt 0 ]; then exec "$EXEC_PATH" "$@"; fi
+APP_PATH="${EXEC_PATH%%/Contents/MacOS/*}"
+if [ "$APP_PATH" != "$EXEC_PATH" ] && [ -d "$APP_PATH" ]; then
+  exec /usr/bin/open "$APP_PATH"
+fi
+exec "$EXEC_PATH"

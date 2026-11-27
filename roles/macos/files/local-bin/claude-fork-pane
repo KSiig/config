@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+# Fork the most recent Claude Code session (in this project) into a new tmux pane.
+# Designed to be bound to a tmux key — works even while the original session is mid-prompt.
+set -euo pipefail
+
+pane_cwd="$(tmux display-message -p '#{pane_current_path}')"
+
+# Claude encodes the project path by replacing / with -
+project_key="${pane_cwd//\//-}"
+sessions_dir="$HOME/.claude/projects/${project_key}"
+
+if [[ ! -d "$sessions_dir" ]]; then
+  tmux display-message "claude-fork: no Claude project found for ${pane_cwd}"
+  exit 1
+fi
+
+# The active session is the most recently modified .jsonl
+session_file="$(ls -t "${sessions_dir}"/*.jsonl 2>/dev/null | head -1)"
+if [[ -z "$session_file" ]]; then
+  tmux display-message "claude-fork: no sessions found in ${sessions_dir}"
+  exit 1
+fi
+
+session_id="$(basename "$session_file" .jsonl)"
+
+fork_name="fork-$(date +%H%M%S)"
+
+tmux split-window -h -c "$pane_cwd" "claude --resume '${session_id}' --fork-session -n '${fork_name}'"

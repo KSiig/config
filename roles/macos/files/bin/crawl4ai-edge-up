@@ -1,0 +1,122 @@
+#!/usr/bin/env bash
+# crawl4ai-edge-up — Launch Edge with CDP enabled for pi-crawl4ai.
+#
+# Usage:
+#   crawl4ai-edge-up headed|headless
+#
+# Idempotent. If Edge is already running in the requested mode, exits 0.
+# If running in a different mode, kills the existing instance and relaunches.
+# Writes pid + state to ~/.crawl4ai/edge.{pid,state}.
+
+set -euo pipefail
+
+MODE="${1:-}"
+if [[ "$MODE" != "headed" && "$MODE" != "headless" ]]; then
+  echo "usage: crawl4ai-edge-up headed|headless" >&2
+  exit 2
+fi
+
+DEBUG_PORT="${CRAWL4AI_DEBUG_PORT:-9223}"
+PROFILE_DIR="$HOME/Library/Application Support/Microsoft Edge/Crawler"
+STATE_DIR="$HOME/.crawl4ai"
+LOG="$STATE_DIR/edge.log"
+STATE_FILE="$STATE_DIR/edge.state"
+PID_FILE="$STATE_DIR/edge.pid"
+
+EDGE="/Applications/Microsoft Edge.app/Contents/MacOS/Microsoft Edge"
+
+mkdir -p "$STATE_DIR"
+
+if [[ ! -x "$EDGE" ]]; then
+  echo "edge binary not found at $EDGE" >&2
+  exit 1
+fi
+
+# Read existing state if any
+EXISTING_PID=""
+EXISTING_MODE=""
+if [[ -f "$STATE_FILE" ]]; then
+  EXISTING_PID=$(python3 -c "import json; print(json.load(open('$STATE_FILE')).get('pid',''))" 2>/dev/null || echo "")
+  EXISTING_MODE=$(python3 -c "import json; print(json.load(open('$STATE_FILE')).get('mode',''))" 2>/dev/null || echo "")
+fi
+
+# If already running in the requested mode, no-op.
+if [[ -n "$EXISTING_PID" ]] && kill -0 "$EXISTING_PID" 2>/dev/null; then
+  if [[ "$EXISTING_MODE" == "$MODE" ]]; then
+    echo "Edge already running in mode=$MODE (pid=$EXISTING_PID, port=$DEBUG_PORT)"
+    exit 0
+  fi
+  # Different mode — kill and relaunch.
+  echo "Edge running in mode=$EXISTING_MODE; killing pid=$EXISTING_PID"
+  kill "$EXISTING_PID" 2>/dev/null || true
+  # Give it a moment to release the singleton lock.
+  for _ in {1..20}; do
+    kill -0 "$EXISTING_PID" 2>/dev/null || break
+    sleep 0.1
+  done
+  if kill -0 "$EXISTING_PID" 2>/dev/null; then
+    kill -9 "$EXISTING_PID" 2>/dev/null || true
+    sleep 0.2
+  fi
+fi
+
+# Build the Edge argv.
+ARGS=(
+  --remote-debugging-port="$DEBUG_PORT"
+  --remote-allow-origins='*'
+  --user-data-dir="$PROFILE_DIR"
+  --profile-directory=Default
+  --no-first-run
+  --no-default-browser-check
+)
+# Bind 127.0.0.1 only — Chromium defaults to 0.0.0.0 which conflicts with
+# other Chrome/Edge instances using --remote-debugging-port=0.
+ARGS+=(--remote-debugging-address=127.0.0.1)
+if [[ "$MODE" == "headless" ]]; then
+  ARGS+=(--headless=new)
+fi
+
+# Launch in the background.
+nohup "$EDGE" "${ARGS[@]}" > "$LOG" 2>&1 &
+NEW_PID=$!
+echo "$NEW_PID" > "$PID_FILE"
+
+# Wait for CDP to be ready (max ~10s).
+READY=0
+for _ in {1..40}; do
+  if curl -sS --max-time 1 "http://127.0.0.1:$DEBUG_PORT/json/version" >/dev/null 2>&1; then
+    READY=1
+    break
+  fi
+  sleep 0.25
+done
+
+# Verify our spawned process is still alive. If it died, the most likely
+# cause is that something else already has port $DEBUG_PORT — Chromium
+# exits immediately on bind failure. /json/version may respond from
+# whoever owns the port, but that's NOT our Crawler profile Edge.
+if ! kill -0 "$NEW_PID" 2>/dev/null; then
+  echo "Edge process $NEW_PID died. Port $DEBUG_PORT is likely held by another process." >&2
+  echo "Check: lsof -nP -iTCP:$DEBUG_PORT -sTCP:LISTEN" >&2
+  echo "Common cause: a previous Edge instance (e.g. your normal Edge profile launched with --remote-debugging-port=9222 in an earlier test) is still bound." >&2
+  exit 1
+fi
+
+if [[ "$READY" -ne 1 ]]; then
+  echo "Edge failed to expose CDP on port $DEBUG_PORT — see $LOG" >&2
+  kill "$NEW_PID" 2>/dev/null || true
+  exit 1
+fi
+
+# Persist state for the daemon to read. Critically, capture the full CDP
+# WebSocket URL (with the dynamic browser id) — the daemon needs this so
+# the workbox-side crwl can connect via the SSH tunnel.
+CDP_URL=$(curl -sS "http://127.0.0.1:$DEBUG_PORT/json/version" | \
+  python3 -c "import json,sys; print(json.load(sys.stdin)['webSocketDebuggerUrl'])")
+
+STARTED_AT=$(date -u +%Y-%m-%dT%H:%M:%SZ)
+cat > "$STATE_FILE" <<EOF
+{"pid": $NEW_PID, "mode": "$MODE", "debug_port": $DEBUG_PORT, "started_at": "$STARTED_AT", "cdp_url": "$CDP_URL"}
+EOF
+
+echo "Edge ready: pid=$NEW_PID mode=$MODE port=$DEBUG_PORT cdp_url=$CDP_URL"

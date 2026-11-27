@@ -1,0 +1,50 @@
+This repo is public, so a few things are not in git. Put them back before you rely on the machine:
+
+- ~/.creds
+- ~/.ssh/ (private keys and config for openclaw, pi, and workbox)
+- gh auth login   (~/.config/gh/hosts.yml is not in git)
+- ~/.kube/config
+- claude login     (~/.claude/.credentials.json is not in git)
+- grok login       (~/.grok/auth.json and mcp_credentials.json are not in git)
+- In ~/.creds, export TAILNET_MAGICDNS_SUFFIX and TAILSCALE_WORKBOX_IPV4
+
+Not installed from Homebrew, do these by hand:
+
+- Xcode, from the App Store (xcodes and mas are installed)
+- Amphetamine, from the App Store
+- PDFgear, from the vendor
+- Google Docs, Sheets, and Slides (no cask; Google Drive is intentionally skipped)
+- AeroSpace is the stable cask. The old aerospace-dev cask pointed at a local build zip and cannot be reinstalled from here.
+
+Sign in again to 1Password, Docker, az, and the browser.
+
+Private overlay: clone the private repo before running the play, so its rules,
+aliases, brand files, voice sample and settings are linked too:
+
+  gh repo clone KSiig/config-private ~/config-private
+
+Intel Mac (MacPorts): Homebrew is skipped. The play installs the ports in
+Portfile.txt. Download these apps from their vendors:
+
+- 1Password
+- AeroSpace (release zip from github.com/nikitabobko/AeroSpace)
+- Docker Desktop
+- Figma
+- Ghostty
+- Hammerspoon
+- Karabiner-Elements
+- Linear
+- Maccy
+- Microsoft Edge
+- OBS
+- QDirStat
+- Shottr
+- Visual Studio Code
+
+Then pick the default versions of the versioned ports:
+
+  sudo port select --list helm
+  sudo port select --list terraform
+
+Voice output on Intel uses the system `say` voice: the speech server needs
+Apple silicon.

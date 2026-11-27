@@ -1,3 +1,0 @@
----
-- name: Install via Ubuntu task path
-  include_tasks: Ubuntu.yml

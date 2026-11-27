@@ -3,3 +3,11 @@
   community.general.homebrew:
     name: "{{ neovim_name }}"
     state: present
+  when: not use_macports
+
+- name: Install Neovim via MacPorts
+  community.general.macports:
+    name: neovim
+    state: present
+  become: true
+  when: use_macports

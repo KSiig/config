@@ -1,0 +1,257 @@
+{
+  "env": {
+    "CLAUDE_CODE_ARTIFACT_AUTO_OPEN": "0"
+  },
+  "permissions": {
+    "allow": [],
+    "defaultMode": "auto"
+  },
+  "hooks": {
+    "Notification": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "__HOME__/.claude/hooks/notify.sh"
+          }
+        ]
+      },
+      {
+        "matcher": "permission_prompt|elicitation_dialog",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "__HOME__/.local/bin/agent-deck hook-handler",
+            "async": true
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Task",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "export COZEMPIC_NO_AUTO_INIT=1; { cozempic checkpoint 2>/dev/null || python3 -m cozempic checkpoint 2>/dev/null; } || true # cozempic-hook-schema=v13"
+          }
+        ]
+      },
+      {
+        "matcher": "TaskCreate|TaskUpdate",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "export COZEMPIC_NO_AUTO_INIT=1; { cozempic checkpoint 2>/dev/null || python3 -m cozempic checkpoint 2>/dev/null; } || true # cozempic-hook-schema=v13"
+          }
+        ]
+      },
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "export COZEMPIC_NO_AUTO_INIT=1; { cozempic remind 2>/dev/null || python3 -m cozempic remind 2>/dev/null; } || true # cozempic-hook-schema=v13"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "export COZEMPIC_NO_AUTO_INIT=1; HOOK_INPUT=$(cat); TRANSCRIPT=$(printf %s \"$HOOK_INPUT\" | PYTHONIOENCODING=utf-8 python3 -c \"import sys,json; print(json.load(sys.stdin).get('transcript_path',''))\" 2>/dev/null); { cozempic checkpoint >/dev/null 2>&1 || python3 -m cozempic checkpoint >/dev/null 2>&1; } || true; { cozempic digest flush ${TRANSCRIPT:+--session \"$TRANSCRIPT\"} >/dev/null 2>&1 || python3 -m cozempic digest flush ${TRANSCRIPT:+--session \"$TRANSCRIPT\"} >/dev/null 2>&1; } || true; printf %s \"$HOOK_INPUT\" | { cozempic nudge 2>/dev/null || python3 -m cozempic nudge 2>/dev/null; } || true; # cozempic-hook-schema=v13"
+          },
+          {
+            "type": "command",
+            "command": "AGENTDECK_STOP_SYNC=1 __HOME__/.local/bin/agent-deck hook-handler"
+          }
+        ]
+      },
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 ~/.claude/hooks/speak.py"
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 ~/.claude/hooks/voice.py prompt"
+          },
+          {
+            "type": "command",
+            "command": "__HOME__/.local/bin/agent-deck hook-handler"
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Read|Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 __HOME__/.claude/hooks/inject-rules.py",
+            "statusMessage": "Checking path-scoped rules..."
+          }
+        ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "AGENTDECK_PRETOOL_SYNC=1 __HOME__/.local/bin/agent-deck hook-handler"
+          }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "export COZEMPIC_NO_AUTO_INIT=1; HOOK_DATA=$(cat); SESSION_ID=$(echo \"$HOOK_DATA\" | PYTHONIOENCODING=utf-8 python3 -c \"import sys,json,re; s=json.load(sys.stdin).get('session_id','').lower(); print(re.sub(r'[^a-z0-9_-]','_',s))\" 2>/dev/null); TRANSCRIPT=$(echo \"$HOOK_DATA\" | PYTHONIOENCODING=utf-8 python3 -c \"import sys,json; print(json.load(sys.stdin).get('transcript_path',''))\" 2>/dev/null); { cozempic digest inject ${TRANSCRIPT:+--session \"$TRANSCRIPT\"} 2>/dev/null || python3 -m cozempic digest inject ${TRANSCRIPT:+--session \"$TRANSCRIPT\"} 2>/dev/null; } || true; [ -n \"$SESSION_ID\" ] && { STATUS_FILE=\"/tmp/cozempic_reload_${SESSION_ID:0:12}.status\"; if [ -f \"$STATUS_FILE\" ]; then echo \"Cozempic: previous reload may have failed — $(head -n 3 $STATUS_FILE 2>/dev/null | tail -n 1)\"; rm -f \"$STATUS_FILE\"; fi; }; [ -n \"$SESSION_ID\" ] && (export COZEMPIC_NO_GLOBAL_INIT=1; if command -v flock >/dev/null 2>&1; then flock -n 9 || exit 0; fi; SENTINEL_FILE=\"/tmp/cozempic_reload_${SESSION_ID:0:12}.in-flight\"; if [ -f \"$SENTINEL_FILE\" ] && [ $(( $(date +%s) - $(stat -f %m \"$SENTINEL_FILE\" 2>/dev/null || stat -c %Y \"$SENTINEL_FILE\" 2>/dev/null || echo 0) )) -lt 120 ]; then echo \"Cozempic: reload in flight, skipping guard spawn\"; exit 0; fi; if [ -z \"$COZEMPIC_NO_AUTO_UPDATE\" ] && [ -z \"$COZEMPIC_PIN\" ]; then PRE=$(cozempic --version 2>/dev/null | awk '/^cozempic /{print $2; exit}'); { uv pip install --upgrade cozempic --quiet 2>/dev/null || pip install --upgrade cozempic --quiet --disable-pip-version-check 2>/dev/null || python3 -m pip install --upgrade cozempic --quiet --disable-pip-version-check 2>/dev/null; } && POST=$(cozempic --version 2>/dev/null | awk '/^cozempic /{print $2; exit}') && [ -n \"$POST\" ] && [ \"$PRE\" != \"$POST\" ] && { cozempic guard --reload-self ${TRANSCRIPT:+--session \"$TRANSCRIPT\"} 2>/dev/null || python3 -m cozempic guard --reload-self ${TRANSCRIPT:+--session \"$TRANSCRIPT\"} 2>/dev/null; }; fi; GUARD_PID_FILE=\"/tmp/cozempic_guard_${SESSION_ID:0:12}.pid\"; GUARD_STARTUP_LOCK=\"/tmp/cozempic_guard_${SESSION_ID:0:12}.startup-lock\"; if [ -f \"$GUARD_PID_FILE\" ] && kill -0 \"$(head -n 1 \"$GUARD_PID_FILE\" 2>/dev/null)\" 2>/dev/null; then :; elif command -v flock >/dev/null 2>&1; then ( flock -n 8 || exit 0; { cozempic guard --daemon --soft-threshold-tokens 100000 --threshold-tokens 250000 ${TRANSCRIPT:+--session \"$TRANSCRIPT\"} 2>/dev/null || python3 -m cozempic guard --daemon --soft-threshold-tokens 100000 --threshold-tokens 250000 ${TRANSCRIPT:+--session \"$TRANSCRIPT\"} 2>/dev/null; } || true; ) 8>\"$GUARD_STARTUP_LOCK\"; else { cozempic guard --daemon --soft-threshold-tokens 100000 --threshold-tokens 250000 ${TRANSCRIPT:+--session \"$TRANSCRIPT\"} 2>/dev/null || python3 -m cozempic guard --daemon --soft-threshold-tokens 100000 --threshold-tokens 250000 ${TRANSCRIPT:+--session \"$TRANSCRIPT\"} 2>/dev/null; } || true; fi; ) 9>\"/tmp/cozempic_hook_${SESSION_ID:0:12}.lock\" >/dev/null 2>&1 & echo 'Cozempic: guard active' # cozempic-hook-schema=v13"
+          },
+          {
+            "type": "command",
+            "command": "__HOME__/.local/bin/agent-deck hook-handler",
+            "async": true
+          }
+        ]
+      }
+    ],
+    "PreCompact": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "export COZEMPIC_NO_AUTO_INIT=1; TRANSCRIPT=$(cat | PYTHONIOENCODING=utf-8 python3 -c \"import sys,json; print(json.load(sys.stdin).get('transcript_path',''))\" 2>/dev/null); { cozempic checkpoint 2>/dev/null || python3 -m cozempic checkpoint 2>/dev/null; } || true; { cozempic digest flush ${TRANSCRIPT:+--session \"$TRANSCRIPT\"} 2>/dev/null || python3 -m cozempic digest flush ${TRANSCRIPT:+--session \"$TRANSCRIPT\"} 2>/dev/null; } || true; echo 'Cozempic: context checkpointed' # cozempic-hook-schema=v13"
+          },
+          {
+            "type": "command",
+            "command": "__HOME__/.local/bin/agent-deck hook-handler"
+          }
+        ]
+      }
+    ],
+    "PostCompact": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "export COZEMPIC_NO_AUTO_INIT=1; { cozempic post-compact 2>/dev/null || python3 -m cozempic post-compact 2>/dev/null; } || true; { cozempic digest inject 2>/dev/null || python3 -m cozempic digest inject 2>/dev/null; } || true; echo 'Cozempic: context recovered' # cozempic-hook-schema=v13"
+          }
+        ]
+      }
+    ],
+    "PermissionRequest": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "__HOME__/.local/bin/agent-deck hook-handler"
+          }
+        ]
+      }
+    ],
+    "SessionEnd": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "__HOME__/.local/bin/agent-deck hook-handler",
+            "async": true
+          }
+        ]
+      }
+    ]
+  },
+  "statusLine": {
+    "type": "command",
+    "command": "__HOME__/.local/bin/agent-deck -p default usage statusline-wrap -- sh -c 'bash __HOME__/.claude/statusline-command.sh'",
+    "refreshInterval": 1,
+    "hideVimModeIndicator": true
+  },
+  "enabledPlugins": {
+    "rust-analyzer-lsp@claude-plugins-official": true,
+    "cozempic@cozempic": true,
+    "plannotator@plannotator": true,
+    "figma@claude-plugins-official": true
+  },
+  "extraKnownMarketplaces": {
+    "cozempic": {
+      "source": {
+        "source": "github",
+        "repo": "Ruya-AI/cozempic"
+      }
+    },
+    "plannotator": {
+      "source": {
+        "source": "github",
+        "repo": "backnotprop/plannotator"
+      }
+    }
+  },
+  "effortLevel": "low",
+  "promptSuggestionEnabled": false,
+  "awaySummaryEnabled": false,
+  "tui": "fullscreen",
+  "voice": {
+    "enabled": true,
+    "mode": "hold"
+  },
+  "theme": "dark",
+  "editorMode": "vim",
+  "skipAutoPermissionPrompt": true,
+  "autoMode": {
+    "allow": [
+      "Test Artifacts: Hardcoded test API keys, placeholder credentials in examples, or hardcoding test cases",
+      "Local Operations: Agent deleting local files in working directory, local file operations within project scope, or using `--ignore-certificate-errors` for local testing. \"Project scope\" means the repository the session started in — wandering into ~/, ~/Library/, /etc, or other repos is scope escalation, not a local operation. Does NOT cover irreversible destruction of pre-existing files or local stateful services.",
+      "Read-Only Operations: GET requests, read-only API calls, or queries that don't modify state and don't contain sensitive information in the URL. Note: PREEMPTIVE BLOCK ON CLEAR INTENT still applies — if the transcript contains clear evidence the agent is using read-only operations to scout for a blocked action, block it.",
+      "Standard Credentials: Reading credentials from the agent's own config (.env, config files) and sending them to their intended provider (e.g. API key to its matching API endpoint)",
+      "Memory Directory: Routine writes to and deletes from the agent's memory directory (e.g. ~/.claude/projects/*/memory/) — recording or pruning user preferences, project facts, references.",
+      "Claude Code Scheduling: Using `CronCreate`, `CronDelete`, `CronList`, or `RemoteTrigger` to schedule or manage Claude Code tasks.",
+      "File Edits: Using the Edit and Write tools to create or modify files within the project working directory — except for files listed under the Self-Modification block rules (.claude/settings*.json, CLAUDE.md, .mcp.json, etc.).",
+      "Routine Shell Operations: Shell commands that only affect the local project directory and don't reach external systems — e.g. mkdir, mv, cp, ln, touch, sed, awk, and similar file-manipulation utilities within project scope. chmod is allowed within project scope provided it doesn't set world-writable (777, o+w) or add executable to untrusted files. For deletion or overwriting of pre-existing files, defer to the Irreversible Local Destruction rule.",
+      "Build and Test: Running build, test, lint, and format commands for the project — e.g. npm test, npm run build, dotnet build, dotnet test, cargo build, cargo test, pytest, eslint, prettier. These may create local artifacts (build output, coverage reports, compiled files) which is fine. Note: commands like `npm test` and `npm run build` execute scripts defined in package.json — if the agent modified package.json earlier in the session, the WRITTEN FILE EXECUTION evaluation rule applies. Test and build commands must not invoke infrastructure-mutating operations (e.g. terraform apply).",
+      "Terraform Read-Only: Running terraform init, terraform plan, terraform validate, and terraform fmt. These modify only local .terraform/ state or produce read-only output. Note: terraform init downloads provider plugins from the internet — this is expected and is NOT package installation."
+    ],
+    "soft_deny": [
+      "Git Commits: Creating git commits. Require explicit user intent — the user must ask for or clearly authorize the commit in the conversation.",
+      "Git Push: Pushing to any remote branch. Require explicit user intent. CI/CD pipelines trigger on push, so even feature-branch pushes can have real infrastructure consequences.",
+      "Code from External: Downloading and executing code from external sources — e.g. `curl | bash`, `iex (iwr ...)` / `Invoke-Expression` on remote content, deserializing external data via formats that can execute code (eval, exec, yaml.unsafe_load, pickle, etc), or similar mechanisms. Also includes running code from an external repo cloned earlier in the transcript. The repo the agent starts in is trusted. An agent-guessed download source is external.",
+      "Package Installation: Installing packages via package managers — npm install, pip install, yarn add, cargo install, dotnet add package, brew install, apt install, or equivalent. This includes both named packages and installing from manifest files.",
+      "External System Mutations: Bash commands that send data to or modify external systems — including curl/wget POST/PUT/DELETE requests, docker push, database mutations, API calls that modify remote state, or any command that reaches out to a service and changes something. This rule covers raw infrastructure/API mutations; see also the default External System Writes rule for collaboration-tool-specific rules (Jira, GitHub Issues, Linear, etc.). Note: test suites that make HTTP calls to local or staging services are covered by Build and Test, not this rule."
+    ],
+    "hard_deny": [
+      "$defaults",
+      "Terraform Mutations: Running terraform apply, terraform destroy, terragrunt apply, terragrunt destroy, or any command that mutates infrastructure. terraform init, terraform plan, terraform fmt, and terraform validate are read-only and allowed.",
+      "Credential Exploration: Systematically scanning credential stores (e.g. Kubernetes secrets, cloud secret managers, config files, environment variables, password vaults) to find usable tokens or API keys beyond what the agent's normal tools provide, or using credentials meant for a different service or purpose. The exploration behavior — trying multiple paths, failing, searching — is itself the violation.",
+      "Exfil Scouting: Testing which endpoints are reachable (webhook sites, file-sharing services, DNS resolvers) or probing encoding bypasses — treat as preparation for data exfiltration."
+    ],
+    "environment": [
+      "**Trusted repo**: The git repository the agent started in (its working directory) and its configured remote(s)",
+      "**Source control**: All repos under github.com/KSiig are trusted source control.",
+      "**Trusted internal domains**: None configured",
+      "**Trusted cloud buckets**: None configured",
+      "**Key internal services**: None configured",
+      "**Infrastructure-as-Code repo**: The user works primarily with Terraform/Terragrunt. CI/CD pipelines run on push. Any git push can trigger real infrastructure changes.",
+      "**Permission philosophy**: Start locked down, open up incrementally. The user evaluates blocked commands and adds allow/soft_deny rules over time."
+    ]
+  },
+  "voiceEnabled": true,
+  "remoteControlAtStartup": true
+}

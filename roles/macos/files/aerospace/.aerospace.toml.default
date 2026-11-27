@@ -1,0 +1,126 @@
+config-version = 2
+start-at-login = true
+auto-reload-config = true
+default-root-container-layout = 'tiles'
+# Stable AeroSpace only takes one number here. The per-workspace/monitor
+# form below needs the old aerospace-dev build.
+# accordion-padding = [
+#     { workspace = { '2' = [{ monitor = { 'LG ULTRAWIDE' = 384 } }, 32] } },
+#     { workspace = { '3' = [{ monitor = { 'Built-in Retina Display' = 128 } }, 32] } },
+#     # { workspace = { '2' =  384 } },
+#     32
+#   ]
+accordion-padding = 32
+default-root-container-orientation = 'horizontal'
+gaps.inner.horizontal = 8
+gaps.inner.vertical = 8
+gaps.outer.left = 8
+gaps.outer.top = 8
+gaps.outer.right = 8
+gaps.outer.bottom = 8
+
+[workspace-to-monitor-force-assignment]
+1 = 'LG ULTRAWIDE'
+2 = 'LG ULTRAWIDE'
+3 = 'Built-in Retina Display'
+4 = 'Built-in Retina Display'
+5 = 'LG ULTRAWIDE'
+6 = 'LG ULTRAWIDE'
+7 = 'LG ULTRAWIDE'
+8 = 'LG ULTRAWIDE'
+9 = 'LG ULTRAWIDE'
+
+# right_command (f13) = workspace mode — switch workspaces, l to enter layout mode
+# right_option  (f14) = move mode    — move windows, h/j/k/l to focus
+
+[mode.main.binding]
+    f13 = 'mode workspace'
+    f14 = 'mode move'
+
+# Workspace mode: tap a number to switch workspace
+[mode.workspace.binding]
+    1 = ['workspace 1', 'mode main']
+    2 = ['workspace 2', 'mode main']
+    3 = ['workspace 3', 'mode main']
+    4 = ['workspace 4', 'mode main']
+    5 = ['workspace 5', 'mode main']
+    6 = ['workspace 6', 'mode main']
+    7 = ['workspace 7', 'mode main']
+    8 = ['workspace 8', 'mode main']
+    9 = ['workspace 9', 'mode main']
+    h = ['focus left', 'mode main']
+    j = ['focus down', 'mode main']
+    k = ['focus up', 'mode main']
+    l = ['focus right', 'mode main']
+    t = 'layout tiles accordion'
+    tab = ['workspace-back-and-forth', 'mode main']
+    s = ['exec-and-forget ~/.config/aerospace/scripts/cpwb.sh', 'mode main']
+    c = 'mode tmux'
+    g = ['exec-and-forget ~/.config/aerospace/scripts/github-layout.sh', 'mode main']
+    # Claude artifacts: the focused artifact window moves to the middle column
+    a = ['exec-and-forget ~/.config/aerospace/scripts/artifact-layout.sh', 'mode main']
+    # Claude Code voice output, handled by Hammerspoon (hammerspoon/init.lua)
+    v = ['exec-and-forget open -g hammerspoon://voice?cmd=hotkey', 'mode main']
+    r = ['exec-and-forget open -g hammerspoon://voice?cmd=hotkey-repeat', 'mode main']
+    shift-l = 'mode layout'
+    esc = 'mode main'
+
+# tmux mode: tap a number to select that window in the active tmux session
+[mode.tmux.binding]
+    1 = ['exec-and-forget ~/.config/aerospace/scripts/tmux-window.sh 1', 'mode main']
+    2 = ['exec-and-forget ~/.config/aerospace/scripts/tmux-window.sh 2', 'mode main']
+    3 = ['exec-and-forget ~/.config/aerospace/scripts/tmux-window.sh 3', 'mode main']
+    4 = ['exec-and-forget ~/.config/aerospace/scripts/tmux-window.sh 4', 'mode main']
+    5 = ['exec-and-forget ~/.config/aerospace/scripts/tmux-window.sh 5', 'mode main']
+    6 = ['exec-and-forget ~/.config/aerospace/scripts/tmux-window.sh 6', 'mode main']
+    7 = ['exec-and-forget ~/.config/aerospace/scripts/tmux-window.sh 7', 'mode main']
+    8 = ['exec-and-forget ~/.config/aerospace/scripts/tmux-window.sh 8', 'mode main']
+    9 = ['exec-and-forget ~/.config/aerospace/scripts/tmux-window.sh 9', 'mode main']
+    esc = 'mode main'
+
+# Move mode: h/j/k/l to move window
+[mode.move.binding]
+    h = ['move left', 'mode main']
+    j = ['move down', 'mode main']
+    k = ['move up', 'mode main']
+    l = ['move right', 'mode main']
+    1 = ['move-node-to-workspace 1', 'mode main']
+    2 = ['move-node-to-workspace 2', 'mode main']
+    3 = ['move-node-to-workspace 3', 'mode main']
+    4 = ['move-node-to-workspace 4', 'mode main']
+    5 = ['move-node-to-workspace 5', 'exec-and-forget ~/.config/aerospace/scripts/github-layout.sh', 'mode main']
+    6 = ['move-node-to-workspace 6', 'mode main']
+    7 = ['move-node-to-workspace 7', 'exec-and-forget ~/.config/aerospace/scripts/artifact-layout.sh new', 'mode main']
+    8 = ['move-node-to-workspace 8', 'mode main']
+    9 = ['move-node-to-workspace 9', 'mode main']
+    m = ['move-node-to-monitor --wrap-around next', 'mode main']
+    esc = 'mode main'
+
+# Layout mode: change layout, resize, focus
+[mode.layout.binding]
+    t = ['layout tiles horizontal vertical', 'mode main']
+    a = ['layout accordion horizontal vertical', 'mode main']
+    f = ['layout floating tiling', 'mode main']
+    h = ['focus left', 'mode main']
+    j = ['focus down', 'mode main']
+    k = ['focus up', 'mode main']
+    l = ['focus right', 'mode main']
+    minus = ['resize smart +50']
+    equal = ['resize smart -50']
+    enter = 'mode main'
+
+
+# GitHub web apps (Edge PWA and Safari web app, both named "GitHub"): every
+# window opens in workspace 5, then the layout script pins the two oldest
+# windows left and stacks the rest as an accordion right
+[[on-window-detected]]
+if.app-name-regex-substring = '^GitHub$'
+run = ['move-node-to-workspace 5', 'exec-and-forget ~/.config/aerospace/scripts/github-layout.sh']
+
+# Claude artifacts web app (Edge PWA, also named "Claude", so match the app id
+# to leave the Claude desktop app alone): every window opens in workspace 7,
+# then the layout script pins the gallery left, puts the new window in the
+# middle and stacks the rest on the right
+[[on-window-detected]]
+if.app-id = 'com.microsoft.edgemac.app.fmpnliohjhemenmnlpbfagaolkdacoja'
+run = ['move-node-to-workspace 7', 'exec-and-forget ~/.config/aerospace/scripts/artifact-layout.sh new']
